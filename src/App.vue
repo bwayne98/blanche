@@ -33,6 +33,11 @@ export default {
     color: #2c3e50;
 }
 
+body{
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
 nav, content, footer{
   display: block;
 }

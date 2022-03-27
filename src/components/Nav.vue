@@ -14,18 +14,28 @@
             <i class="fa-solid fa-comment"></i>
             <i class="fa-solid fa-user"></i>
             <i class="fa-solid fa-bag-shopping"></i>
-            <i class="fa-solid fa-bars sidebar-controller"></i>
+            <i class="fa-solid fa-bars sidebar-controller" @click="(e)=>showSide(e)"></i>
         </div>
         <img src="https://img.shoplineapp.com/media/image_clips/6177d14056a0c000203d646c/original.png?1635242304" alt="Logo">
-        <div class="menus">
+        <div class="top-arrow" @click="topArrow">
+            <i class="fa-solid fa-arrow-up"></i>
+        </div>
+        <div id="menus" :class="{active : side_bar}">
+            
             <ul class="main-list">
-                <li> <span>甜點 <i class="fa-solid fa-angle-down"></i> </span>
+                <li>
+                    <div>
+                        <div> 甜點 </div> <i class="fa-solid fa-angle-down"></i>
+                    </div>
                     <ul class="sub-list">
                         <li><span> 現場專區 </span></li>
                         <li><span> 草莓季 </span></li>
                     </ul>
                 </li>
-                <li> <span> 禮盒 <i class="fa-solid fa-angle-down"></i> </span>
+                <li>
+                    <div>
+                        <div> 禮盒 </div> <i class="fa-solid fa-angle-down"></i>
+                    </div>
                     <ul class="sub-list">
                         <li><span> 常溫宅配專區 </span></li>
                         <li><span> 冷凍宅配專區 </span></li>
@@ -36,6 +46,32 @@
                 <li><span> 聯絡我們 </span></li>
                 <li><span> 銷售據點 </span></li>
             </ul>
+            <hr>
+            <ul class="main-list">
+                <li>
+                    <div>
+                        <div> 甜點 </div> <i class="fa-solid fa-angle-down"></i>
+                    </div>
+                    <ul class="sub-list">
+                        <li><span> 現場專區 </span></li>
+                        <li><span> 草莓季 </span></li>
+                    </ul>
+                </li>
+                <li>
+                    <div>
+                        <div> 禮盒 </div> <i class="fa-solid fa-angle-down"></i>
+                    </div>
+                    <ul class="sub-list">
+                        <li><span> 常溫宅配專區 </span></li>
+                        <li><span> 冷凍宅配專區 </span></li>
+                    </ul>
+                </li>
+                <li><span> 客製化蛋糕 </span></li>
+                <li><span> 關於我們 </span></li>
+                <li><span> 聯絡我們 </span></li>
+                <li><span> 銷售據點 </span></li>
+            </ul>
+            <div class="dark-bg" @click="(e)=>showSide(e)"></div>
         </div>
 
     </div>
@@ -66,22 +102,46 @@ export default {
             e.stopPropagation();
             e.preventDefault();
             if (window.innerWidth <= 1200 && search_bar.value === false) {
-                document.body.style.overflow = 'hidden';
+                document.body.style.overflowY = 'hidden';
                 search_bar.value = true;
             } else {
-                document.body.style.overflow = 'auto';
+                document.body.style.overflowY = 'scroll';
                 search_bar.value = false;
             }
         }
 
         window.addEventListener('resize', () => {
-            document.body.style.overflow = 'auto';
+            document.body.style.overflowY = 'scroll';
             search_bar.value = false;
+            side_bar.value = false;
         })
+
+        //scroll to Top
+        const topArrow = () => {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+
+        //sidebar顯示
+        const side_bar = ref(false)
+        const showSide = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (window.innerWidth <= 1200 && side_bar.value === false) {
+                document.body.style.overflowY = 'hidden';
+                side_bar.value = true;
+            } else {
+                document.body.style.overflowY = 'scroll';
+                side_bar.value = false;
+            }
+        }
 
         return {
             clickSearch,
-            search_bar
+            topArrow,
+            showSide,
+            search_bar,
+            side_bar
         }
     }
 }
@@ -204,6 +264,27 @@ body {
             height: 100px;
             width: 100px;
             cursor: pointer;
+
+        }
+
+        .top-arrow {
+            width: 34px;
+            height: 34px;
+            position: fixed;
+            right: 40px;
+            bottom: 100px;
+            background-color: rgba(255, 255, 255, 0.995);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4em;
+            color: $gray_hover;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(0, 0, 0, 0.1);
         }
 
         ul.main-list {
@@ -212,12 +293,14 @@ body {
             padding-top: 10px;
 
             >li {
+                display: flex;
+                align-items: center;
                 color: $gray_base;
                 font-weight: 600;
                 position: relative;
                 padding: 10px 12px 10px 12px;
 
-                >span {
+                >div {
                     display: flex;
                     align-items: center;
                     cursor: pointer;
@@ -229,7 +312,7 @@ body {
                     }
                 }
 
-                >span:hover {
+                >div:hover {
                     opacity: 0.7;
                 }
             }
@@ -240,12 +323,17 @@ body {
                     pointer-events: all;
                 }
 
-                >span {
+                >div {
                     >i {
                         transform: rotate(180deg);
                     }
                 }
+
             }
+        }
+
+        ul.main-list:nth-of-type(2) {
+            display: none;
         }
 
         ul.sub-list {
@@ -296,6 +384,13 @@ body {
         >ul.main-list {
             padding: 0 0 0 30px;
         }
+
+        .top-arrow {
+            opacity: 1;
+            pointer-events: all;
+            cursor: pointer;
+        }
+
     }
 }
 
@@ -309,6 +404,12 @@ body {
     display: none;
     z-index: -10;
     cursor: auto;
+}
+
+#menus {
+    hr {
+        display: none;
+    }
 }
 
 @media (max-width: 1200px) {
@@ -361,15 +462,82 @@ body {
                 margin: auto 15px auto 15px;
                 cursor: pointer;
             }
+        }
+    }
 
-            ul.main-list {
-                li {
-                    display: none;
+    #menus {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100vh;
+        padding: 10px;
+        background-color: rgb(255, 255, 255);
+        transition: .3s;
+
+        hr {
+            display: block;
+        }
+
+        .dark-bg{
+            opacity: 0;
+            pointer-events: none;
+            display: block;
+            left:0px;
+            transition: .3s;
+        }
+
+        >ul.main-list {
+            display: flex;
+            flex-direction: column;
+
+            >li {
+                text-align: start;
+                display: block;
+                position: relative;
+                background-color: rgb(255, 255, 255);
+
+                >div {
+                    background-color: rgb(255, 255, 255);
+                    justify-content: space-between;
                 }
 
+                >ul {
+                    display: block;
+                    opacity: 1;
+                    background-color: rgb(255, 255, 255);
+                    position: relative;
+                    opacity: 0;
+                    transition: .3s;
+                    margin-top: -10px;
+                    max-height: 0px;
+
+                    li {
+                        display: block;
+                    }
+                }
+            }
+
+            >li:hover {
+                >ul {
+                    opacity: 1;
+                    margin-top: 0px;
+                    max-height: 100px;
+                }
             }
         }
     }
 
+    #menus.active {
+        left: 0px;
+
+        >.dark-bg {
+            opacity: 1;
+            display: block;
+            pointer-events: all;
+            cursor: pointer;
+            left:250px;
+        }
+    }
 }
 </style>
