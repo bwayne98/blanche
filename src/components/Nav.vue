@@ -21,15 +21,19 @@
             <i class="fa-solid fa-arrow-up"></i>
         </div>
         <div id="menus" :class="{active : side_bar}">
-            
+
             <ul class="main-list">
                 <li>
                     <div>
                         <div> 甜點 </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
-                        <li><span> 現場專區 </span></li>
-                        <li><span> 草莓季 </span></li>
+                        <li>
+                            <div> 現場專區 </div>
+                        </li>
+                        <li>
+                            <div> 草莓季 </div>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -37,14 +41,27 @@
                         <div> 禮盒 </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
-                        <li><span> 常溫宅配專區 </span></li>
-                        <li><span> 冷凍宅配專區 </span></li>
+                        <li>
+                            <div> 常溫宅配專區 </div>
+                        </li>
+                        <li>
+                            <div> 冷凍宅配專區 </div>
+                        </li>
                     </ul>
                 </li>
-                <li><span> 客製化蛋糕 </span></li>
-                <li><span> 關於我們 </span></li>
-                <li><span> 聯絡我們 </span></li>
-                <li><span> 銷售據點 </span></li>
+                <li>
+                    <div> 客製化蛋糕 </div>
+                </li>
+
+                <li>
+                    <div> 關於我們 </div>
+                </li>
+                <li>
+                    <div> 聯絡我們 </div>
+                </li>
+                <li>
+                    <div> 銷售據點 </div>
+                </li>
             </ul>
             <hr>
             <ul class="main-list">
@@ -53,8 +70,12 @@
                         <div> 甜點 </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
-                        <li><span> 現場專區 </span></li>
-                        <li><span> 草莓季 </span></li>
+                        <li>
+                            <div> 現場專區 </div>
+                        </li>
+                        <li>
+                            <div> 草莓季 </div>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -62,14 +83,26 @@
                         <div> 禮盒 </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
-                        <li><span> 常溫宅配專區 </span></li>
-                        <li><span> 冷凍宅配專區 </span></li>
+                        <li>
+                            <div> 常溫宅配專區 </div>
+                        </li>
+                        <li>
+                            <div> 冷凍宅配專區 </div>
+                        </li>
                     </ul>
                 </li>
-                <li><span> 客製化蛋糕 </span></li>
-                <li><span> 關於我們 </span></li>
-                <li><span> 聯絡我們 </span></li>
-                <li><span> 銷售據點 </span></li>
+                <li>
+                    <div> 客製化蛋糕 </div>
+                </li>
+                <li>
+                    <div> 關於我們 </div>
+                </li>
+                <li>
+                    <div> 聯絡我們 </div>
+                </li>
+                <li>
+                    <div> 銷售據點 </div>
+                </li>
             </ul>
             <div class="dark-bg" @click="(e)=>showSide(e)"></div>
         </div>
@@ -96,6 +129,15 @@ export default {
                 nav.classList.remove('scroll')
             };
         })
+
+        document.body.addEventListener('touchmove', () => {
+            let nav = document.getElementById('navbar')
+            if (window.scrollY > 50) {
+                nav.classList.add('scroll')
+            } else {
+                nav.classList.remove('scroll')
+            };
+        })
         //search bar controll
         const search_bar = ref(false);
         const clickSearch = (e) => {
@@ -105,13 +147,13 @@ export default {
                 document.body.style.overflowY = 'hidden';
                 search_bar.value = true;
             } else {
-                document.body.style.overflowY = 'scroll';
+                document.body.style.overflowY = 'auto';
                 search_bar.value = false;
             }
         }
 
         window.addEventListener('resize', () => {
-            document.body.style.overflowY = 'scroll';
+            document.body.style.overflowY = 'auto';
             search_bar.value = false;
             side_bar.value = false;
         })
@@ -131,7 +173,7 @@ export default {
                 document.body.style.overflowY = 'hidden';
                 side_bar.value = true;
             } else {
-                document.body.style.overflowY = 'scroll';
+                document.body.style.overflowY = 'auto';
                 side_bar.value = false;
             }
         }
@@ -161,6 +203,10 @@ body {
     position: fixed;
     width: 100vw;
     // transition:background-color 0.5s;
+    -webkit-backface-visibility: hidden;
+    top:0;
+    left:0;
+
 
     .container {
         position: relative;
@@ -273,7 +319,7 @@ body {
             position: fixed;
             right: 40px;
             bottom: 100px;
-            background-color: rgba(255, 255, 255, 0.995);
+            background-color: rgba(255, 255, 255, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -288,7 +334,7 @@ body {
         }
 
         ul.main-list {
-            display: flex;
+            display: none;
             list-style-type: none;
             padding-top: 10px;
 
@@ -298,7 +344,7 @@ body {
                 color: $gray_base;
                 font-weight: 600;
                 position: relative;
-                padding: 10px 12px 10px 12px;
+                padding: 10px 12px 20px 12px;
 
                 >div {
                     display: flex;
@@ -332,8 +378,8 @@ body {
             }
         }
 
-        ul.main-list:nth-of-type(2) {
-            display: none;
+        ul.main-list:nth-of-type(1) {
+            display: flex;
         }
 
         ul.sub-list {
@@ -352,12 +398,12 @@ body {
                 padding: 10px;
                 width: 150px;
 
-                >span {
+                >div {
                     color: $gray_base;
                     cursor: pointer;
                 }
 
-                >span:hover {
+                >div:hover {
                     color: $gray_hover;
                 }
             }
@@ -367,7 +413,7 @@ body {
 }
 
 .scroll {
-    background-color: rgba(255, 255, 255, 0.995);
+    background-color: rgba(255, 255, 255, 0.95);
     height: 100px;
     transition: background-color 0.5s;
 
@@ -381,8 +427,11 @@ body {
             bottom: 0;
         }
 
-        >ul.main-list {
-            padding: 0 0 0 30px;
+        >div {
+            >ul.main-list {
+                padding: 0 0 0 30px;
+                transform: translateY(10px);
+            }
         }
 
         .top-arrow {
@@ -472,18 +521,18 @@ body {
         width: 250px;
         height: 100vh;
         padding: 10px;
-        background-color: rgb(255, 255, 255);
+        background-color: white;
         transition: .3s;
 
         hr {
             display: block;
         }
 
-        .dark-bg{
+        .dark-bg {
             opacity: 0;
             pointer-events: none;
             display: block;
-            left:0px;
+            left: 0px;
             transition: .3s;
         }
 
@@ -495,17 +544,17 @@ body {
                 text-align: start;
                 display: block;
                 position: relative;
-                background-color: rgb(255, 255, 255);
+                background-color: white;
 
                 >div {
-                    background-color: rgb(255, 255, 255);
+                    background-color: white;
                     justify-content: space-between;
                 }
 
                 >ul {
                     display: block;
                     opacity: 1;
-                    background-color: rgb(255, 255, 255);
+                    background-color: white;
                     position: relative;
                     opacity: 0;
                     transition: .3s;
@@ -536,7 +585,18 @@ body {
             display: block;
             pointer-events: all;
             cursor: pointer;
-            left:250px;
+            left: 250px;
+        }
+    }
+
+    .scroll {
+        >.container{
+            >div {
+            >ul.main-list {
+                padding: 0 0 0 0px;
+                transform: translateY(0px);
+            }
+        }
         }
     }
 }

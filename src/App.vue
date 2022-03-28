@@ -1,10 +1,8 @@
 <template>
-<nav>
-  <Nav></Nav>
-</nav>
-<content>
-    <img src='../public/images/main.png' alt="main" style="width:100vw">
-</content>
+<Nav style="z-index:100"></Nav>
+
+<router-view></router-view>
+
 <footer>
     this is a info.
 </footer>
@@ -15,11 +13,11 @@ import Nav from './components/Nav.vue'
 
 export default {
     setup() {
-      
-      return{}
+
+        return {}
     },
-    components:{
-      'Nav' : Nav
+    components: {
+        'Nav': Nav
     }
 }
 </script>
@@ -30,25 +28,26 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: rgb(100, 100, 100)
 }
 
-body{
-  scroll-behavior: smooth;
-  overflow-x: hidden;
+html {
+    scroll-behavior: smooth;
 }
 
-nav, content, footer{
-  display: block;
+body {
+
+    overflow-x: hidden;
 }
 
-content{
-  height: 300vh;
+nav,
+footer {
+    display: block;
 }
 
 * {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 </style>
