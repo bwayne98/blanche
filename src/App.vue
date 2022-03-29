@@ -30,13 +30,17 @@ export default {
     text-align: center;
     color: rgb(100, 100, 100)
 }
-
+::-webkit-scrollbar{
+    width:0px;
+}
 html {
+    overflow-x: hidden;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    
 }
 
 body {
-
     overflow-x: hidden;
 }
 

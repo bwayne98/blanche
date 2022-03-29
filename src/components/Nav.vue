@@ -20,7 +20,7 @@
         <div class="top-arrow" @click="topArrow">
             <i class="fa-solid fa-arrow-up"></i>
         </div>
-        <div id="menus" :class="{active : side_bar}">
+        <div id="menus" :class="{active : side_bar}" style="">
 
             <ul class="main-list">
                 <li>
@@ -130,30 +130,30 @@ export default {
             };
         })
 
-        document.body.addEventListener('touchmove', () => {
-            let nav = document.getElementById('navbar')
-            if (window.scrollY > 50) {
-                nav.classList.add('scroll')
-            } else {
-                nav.classList.remove('scroll')
-            };
-        })
+        // document.body.addEventListener('touchmove', () => {
+        //     let nav = document.getElementById('navbar')
+        //     if (window.scrollY > 50) {
+        //         nav.classList.add('scroll')
+        //     } else {
+        //         nav.classList.remove('scroll')
+        //     };
+        // })
         //search bar controll
         const search_bar = ref(false);
         const clickSearch = (e) => {
             e.stopPropagation();
             e.preventDefault();
             if (window.innerWidth <= 1200 && search_bar.value === false) {
-                document.body.style.overflowY = 'hidden';
+                document.documentElement.style.overflowY = 'hidden';
                 search_bar.value = true;
             } else {
-                document.body.style.overflowY = 'auto';
+                document.documentElement.style.overflowY = 'auto';
                 search_bar.value = false;
             }
         }
 
         window.addEventListener('resize', () => {
-            document.body.style.overflowY = 'auto';
+            document.documentElement.style.overflowY = 'auto';
             search_bar.value = false;
             side_bar.value = false;
         })
@@ -170,10 +170,10 @@ export default {
             e.stopPropagation();
             e.preventDefault();
             if (window.innerWidth <= 1200 && side_bar.value === false) {
-                document.body.style.overflowY = 'hidden';
+                document.documentElement.style.overflowY = 'hidden';
                 side_bar.value = true;
             } else {
-                document.body.style.overflowY = 'auto';
+                document.documentElement.style.overflowY = 'auto';
                 side_bar.value = false;
             }
         }
@@ -204,9 +204,8 @@ body {
     width: 100vw;
     // transition:background-color 0.5s;
     -webkit-backface-visibility: hidden;
-    top:0;
-    left:0;
-
+    top: 0;
+    left: 0;
 
     .container {
         position: relative;
@@ -220,7 +219,7 @@ body {
         max-width: 100vw;
 
         .icons {
-            right: 30px;
+            right: 20px;
             top: 15px;
             position: absolute;
             display: grid;
@@ -318,7 +317,7 @@ body {
             height: 34px;
             position: fixed;
             right: 40px;
-            bottom: 100px;
+            bottom: 60px;
             background-color: rgba(255, 255, 255, 0.95);
             display: flex;
             justify-content: center;
@@ -473,6 +472,7 @@ body {
             .icons {
                 grid-template-columns: repeat(5, 20px);
                 font-size: 1.1em;
+                right:0px;
 
                 i:nth-of-type(2) {
                     display: none;
@@ -505,6 +505,11 @@ body {
 
             }
 
+            .top-arrow{
+                right:20px;
+                bottom:20px;
+            }
+
             >img {
                 height: 44px;
                 width: 44px;
@@ -523,6 +528,7 @@ body {
         padding: 10px;
         background-color: white;
         transition: .3s;
+        overflow: auto;
 
         hr {
             display: block;
@@ -539,6 +545,8 @@ body {
         >ul.main-list {
             display: flex;
             flex-direction: column;
+            padding: 0 0 0 0px;
+            transform: translateY(0px);
 
             >li {
                 text-align: start;
@@ -586,17 +594,6 @@ body {
             pointer-events: all;
             cursor: pointer;
             left: 250px;
-        }
-    }
-
-    .scroll {
-        >.container{
-            >div {
-            >ul.main-list {
-                padding: 0 0 0 0px;
-                transform: translateY(0px);
-            }
-        }
         }
     }
 }
