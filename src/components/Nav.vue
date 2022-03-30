@@ -16,7 +16,7 @@
             <i class="fa-solid fa-bag-shopping"></i>
             <i class="fa-solid fa-bars sidebar-controller" @click="(e)=>showSide(e)"></i>
         </div>
-        <img src="https://img.shoplineapp.com/media/image_clips/6177d14056a0c000203d646c/original.png?1635242304" alt="Logo">
+        <a href="/"><img src="https://img.shoplineapp.com/media/image_clips/6177d14056a0c000203d646c/original.png?1635242304" alt="Logo"></a>
         <div class="top-arrow" @click="topArrow">
             <i class="fa-solid fa-arrow-up"></i>
         </div>
@@ -25,7 +25,7 @@
             <ul class="main-list">
                 <li>
                     <div>
-                        <div> 甜點 </div> <i class="fa-solid fa-angle-down"></i>
+                        <div> <a href="#desert"> 甜點 </a> </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -38,7 +38,7 @@
                 </li>
                 <li>
                     <div>
-                        <div> 禮盒 </div> <i class="fa-solid fa-angle-down"></i>
+                        <div> <a href="#end"> 禮盒 </a></div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -203,7 +203,6 @@ body {
     position: fixed;
     width: 100vw;
     // transition:background-color 0.5s;
-    -webkit-backface-visibility: hidden;
     top: 0;
     left: 0;
 
@@ -305,11 +304,13 @@ body {
             }
         }
 
-        >img {
-            height: 100px;
-            width: 100px;
-            cursor: pointer;
+        >a {
+            >img {
+                height: 100px;
+                width: 100px;
+                cursor: pointer;
 
+            }
         }
 
         .top-arrow {
@@ -349,6 +350,13 @@ body {
                     display: flex;
                     align-items: center;
                     cursor: pointer;
+
+                    >div {
+                        a {
+                            color: $gray_base;
+                            text-decoration: none;
+                        }
+                    }
 
                     >i {
                         padding: 0 5px 0 5px;
@@ -420,10 +428,12 @@ body {
         flex-direction: row;
         align-items: end;
 
-        >img {
-            height: 60px;
-            width: 60px;
-            bottom: 0;
+        >a {
+            >img {
+                height: 60px;
+                width: 60px;
+                bottom: 0;
+            }
         }
 
         >div {
@@ -472,7 +482,7 @@ body {
             .icons {
                 grid-template-columns: repeat(5, 20px);
                 font-size: 1.1em;
-                right:0px;
+                right: 0px;
 
                 i:nth-of-type(2) {
                     display: none;
@@ -505,17 +515,20 @@ body {
 
             }
 
-            .top-arrow{
-                right:20px;
-                bottom:20px;
+            .top-arrow {
+                right: 20px;
+                bottom: 20px;
             }
 
-            >img {
-                height: 44px;
-                width: 44px;
-                margin: auto 15px auto 15px;
-                cursor: pointer;
+            >a {
+                >img {
+                    height: 44px;
+                    width: 44px;
+                    margin: auto 15px auto 15px;
+                    cursor: pointer;
+                }
             }
+
         }
     }
 

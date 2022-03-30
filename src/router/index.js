@@ -21,6 +21,23 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  scrollBehavior(to, from, savedPosition){
+    if (savedPosition){
+      return new Promise((resolve, reject) =>{
+        window.onload=()=>{
+          resolve(savedPosition)
+        }
+      })
+    }else if (to.hash){
+      return new Promise((resolve, reject) =>{
+        window.onload=()=>{
+          resolve({top:document.querySelector(to.hash).offsetTop})
+        }
+      })
+    }else{
+      return { top:0,left:0 }
+    }
+  }
 });
 
 export default router;

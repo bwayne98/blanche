@@ -36,12 +36,13 @@ export default {
 html {
     overflow-x: hidden;
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    // -webkit-overflow-scrolling: touch;
     
 }
 
 body {
     overflow-x: hidden;
+    
 }
 
 nav,
