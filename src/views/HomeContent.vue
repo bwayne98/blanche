@@ -8,8 +8,8 @@
     </svg>
 
     <div class="product-list">
-        <div v-for="(product, index) in 5" :key="'prdouct' + index">
-            <product-list> </product-list>
+        <div v-for="product in products" :key="product.id">
+            <product-list :url="'product'" :id="product.id" :product_name="product.product_name" :price="product.price"> </product-list>
         </div>
     </div>
 
@@ -19,10 +19,16 @@
         <slider></slider>
     </div>
 
-    <h2 id="end">白‧甜點｜常溫禮盒</h2>
+    <h2 id="set">甜點｜禮盒</h2>
     <svg class="short-line" xmlns="http://www.w3.org/2000/svg" width="30" height="10" version="1.1">
         <line x1="5" y1="3" x2="25" y2="3" stroke-width="5" stroke="rgb(80,80,80)" stroke-linecap="round" />
     </svg>
+
+    <div class="product-list">
+        <div v-for="product in product_sets" :key="product.id">
+            <product-list :url="'product_set'" :id="product.id" :product_name="product.product_name" :price="product.price"> </product-list>
+        </div>
+    </div>
 
 </div>
 </template>
@@ -44,23 +50,39 @@ import {
 
 export default {
     setup() {
+        //避免事件堆疊
+        let scrolling = ref(false)
+
+        //url隨scroll變更
         let desert_section;
+        let set_section;
         const onScroll = () => {
 
-            if (scrollY < 200) {
+            if (scrolling.value) {
+                return
+            }
+            scrolling.value = true;
+            let range = (window.innerWidth / 10);
+            if (scrollY < range) {
                 history.replaceState('', '', '/')
             }
 
-            if (Math.abs(desert_section.offsetTop - scrollY) < 200) {
+            if (desert_section.offsetTop < (scrollY + range)) {
                 history.replaceState('', '', '/#desert')
             }
 
-            if (scrollY === (document.documentElement.offsetHeight - window.innerHeight)) {
-                history.replaceState('', '', '/#end')
+            if (set_section.offsetTop < (scrollY + range)) {
+                history.replaceState('', '', '/#set')
             }
+
+            setTimeout(() => {
+                scrolling.value = false
+            }, 50);
+
         }
 
         onMounted(() => {
+            set_section = document.getElementById('set');
             desert_section = document.getElementById('desert');
             window.addEventListener('scroll', onScroll)
         });
@@ -70,7 +92,61 @@ export default {
 
         })
 
-        return {}
+        //product list 內容設定
+
+        const products = [{
+                id: 1,
+                product_name: 'Kiss me',
+                price: 130
+            },
+            {
+                id: 2,
+                product_name: '莓好時光',
+                price: 1080
+            },
+            {
+                id: 3,
+                product_name: '季節限定草莓千層',
+                price: 230
+            },
+            {
+                id: 4,
+                product_name: '季節草莓塔',
+                price: 220
+            },
+            {
+                id: 5,
+                product_name: '娜特莉',
+                price: 130
+            }
+        ]
+
+        const product_sets = [{
+                id: 10001,
+                product_name: '客製化禮盒',
+                price: 1300
+            },
+            {
+                id: 10002,
+                product_name: '白甜點常溫禮盒',
+                price: 880
+            },
+            {
+                id: 10003,
+                product_name: '月光 檸檬塔禮盒',
+                price: 1280
+            },
+            {
+                id: 10004,
+                product_name: '可麗露禮盒',
+                price: 680
+            },
+        ]
+
+        return {
+            products,
+            product_sets
+        }
     },
     components: {
         'ProductList': ProductList,
@@ -118,7 +194,7 @@ export default {
 .slider {
     width: 1140px;
     max-width: 100vw;
-    margin: 0 auto;
+    margin: 10px auto 20px auto;
 }
 
 @media (max-width: 1200px) {

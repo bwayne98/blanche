@@ -1,22 +1,51 @@
 <template>
 <div class="product">
     <div class="image">
-        <img src="../../public/images/product.png" alt="">
+        <img :src="require('../../public/images/' + url + '/' + id + '.png')" alt="">
         <div></div>
-        <button type="button">加入購物車</button>
+        <button type="button" @click="pushShopCar" :disabled="clicked">加入購物車</button>
     </div>
 
-    <h2>Kiss Me</h2>
-    <p>NT$130</p>
+    <h2>{{ product_name }}</h2>
+    <p>NT${{ price }}</p>
 
-    <button><i class="fa-solid fa-cart-shopping"></i></button>
+    <button @click="pushShopCar" :disabled="clicked"><i class="fa-solid fa-cart-shopping"></i></button>
 
 </div>
 </template>
 
 <script>
+import {
+    ref
+} from '@vue/reactivity'
+
+import store from '../store/store.js'
+
 export default {
-    setup() {
+    props: ['url', 'id', 'product_name', 'price'],
+    setup(prop) {
+
+        const clicked = ref(false);
+
+        const pushShopCar = () => {
+            clicked.value = true;
+
+            store.dispatch('pushShopCar', {
+                url: prop.url,
+                id: prop.id,
+                product_name: prop.product_name,
+                price: prop.price
+            })
+            setTimeout(() => {
+                clicked.value = false;
+            }, 500);
+
+        }
+
+        return {
+            pushShopCar,
+            clicked
+        }
 
     },
 }
@@ -45,7 +74,7 @@ export default {
             position: absolute;
             width: 100%;
             height: 100%;
-            cursor:help;
+            cursor: help;
         }
 
         >button {
@@ -60,13 +89,17 @@ export default {
             font-weight: 600;
             z-index: 20;
         }
+
+        >button:disabled {
+            opacity: 0.5;
+        }
     }
 
     >h2 {
         width: 100%;
         background-color: white;
-        font-size: 0.8em;
-        font-weight: 400;
+        font-size: 0.9em;
+        font-weight: 600;
         padding: 10px;
         z-index: 20;
     }
@@ -85,9 +118,13 @@ export default {
         border-style: none;
         border-radius: 3px;
         display: none;
-        font-size:1.1em;
-        color:rgb(100,100,100);
+        font-size: 1.1em;
+        color: rgb(100, 100, 100);
         cursor: pointer;
+    }
+
+    >button:disabled {
+        opacity: 0.5;
     }
 }
 

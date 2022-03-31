@@ -13,7 +13,31 @@
             </i>
             <i class="fa-solid fa-comment"></i>
             <i class="fa-solid fa-user"></i>
-            <i class="fa-solid fa-bag-shopping"></i>
+            <i class="fa-solid fa-bag-shopping shop-car" @click="e => showShopCar(e)" :class="{active: shop_car}">
+                <div class="shop-count" v-show="shop_car_number !== 0">
+                    <div>
+                        <div>{{shop_car_number}}</div>
+                    </div>
+
+                </div>
+                <div class="shop-content" @click.prevent.stop>
+                    <div v-if="shop_car_number === 0" style="margin-top:50vh"> 空的購物車 </div>
+                    <div class="car-list">
+                        <div v-for="product in shop_car_content" :key="product.id">
+                            <img :src="require('../../public/images/' + product.url + '/' + product.id + '.png')" alt="">
+                            <div>
+                                <p>{{ product.product_name }}</p>
+                                <p> <span> {{ product.count }} <span>x</span> NT${{ product.price }} </span> <span> <i @click="removeShopCar(product.id)" class="fa-solid fa-trash-can"></i></span></p>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+
+                    <button v-show="shop_car_number !== 0" type="button"> <span> 前往結帳 ( NT${{ shop_car_price }} ) </span></button>
+
+                </div>
+                <div class="dark-bg"></div>
+            </i>
             <i class="fa-solid fa-bars sidebar-controller" @click="(e)=>showSide(e)"></i>
         </div>
         <a href="/"><img src="https://img.shoplineapp.com/media/image_clips/6177d14056a0c000203d646c/original.png?1635242304" alt="Logo"></a>
@@ -38,7 +62,7 @@
                 </li>
                 <li>
                     <div>
-                        <div> <a href="#end"> 禮盒 </a></div> <i class="fa-solid fa-angle-down"></i>
+                        <div> <a href="#set"> 禮盒 </a></div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -114,8 +138,12 @@
 
 <script>
 import {
-    ref
+    ref,
+    computed,
+    reactive
 } from 'vue';
+
+import store from '../store/store.js'
 
 export default {
 
@@ -156,6 +184,7 @@ export default {
             document.documentElement.style.overflowY = 'auto';
             search_bar.value = false;
             side_bar.value = false;
+            document.querySelector('.shop-car').classList.remove('active')
         })
 
         //scroll to Top
@@ -178,12 +207,50 @@ export default {
             }
         }
 
+        /**---------------購物車--------------------**/
+        const shop_car_number = computed(() => {
+            return store.getters.shop_car_total_count;
+        })
+
+        const shop_car_price = computed(() => {
+            return store.getters.shop_car_total_price
+        })
+
+        const shop_car_content = computed(() => {
+            return store.state.shop_car
+        })
+
+        const shop_car = ref(false)
+        const showShopCar = (e) => {
+            // console.log(e);
+            e.preventDefault();
+            e.stopPropagation();
+            // not work , use @click.prevent.stop
+            if (shop_car.value === false) {
+                document.documentElement.style.overflowY = 'hidden';
+                shop_car.value = true;
+            } else {
+                document.documentElement.style.overflowY = 'auto';
+                shop_car.value = false;
+            }
+        }
+
+        const removeShopCar = (id) => {
+            store.dispatch('removeShopCar', {'id':id});
+        }
+
         return {
             clickSearch,
             topArrow,
             showSide,
+            showShopCar,
+            removeShopCar,
             search_bar,
-            side_bar
+            side_bar,
+            shop_car,
+            shop_car_number,
+            shop_car_content,
+            shop_car_price
         }
     }
 }
@@ -222,9 +289,10 @@ body {
             top: 15px;
             position: absolute;
             display: grid;
-            grid-template-columns: repeat(4, 20px);
-            column-gap: 15px;
+            grid-template-columns: repeat(4, 30px);
+            column-gap: 10px;
             color: $gray_base;
+            font-size: 1.1em;
 
             .sidebar-controller {
                 display: none;
@@ -233,10 +301,12 @@ body {
             >i {
                 padding: 5px;
                 cursor: pointer;
+                
             }
 
             i.search {
                 position: relative;
+                z-index: 1;
 
                 >.search-bar {
                     display: grid;
@@ -302,6 +372,36 @@ body {
                     width: 120px;
                 }
             }
+
+            i.shop-car {
+                position: relative;
+
+                >.shop-count {
+                    font-family: Avenir, Helvetica, Arial, sans-serif;
+                    font-weight: 400;
+
+                    >div {
+                        opacity: .8;
+                        position: absolute;
+                        top: -5px;
+                        right: -8px;
+                        width: 18px;
+                        height: 18px;
+                        background-color: $gray_base;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 50%;
+
+                        >div {
+                            font-size: 1px;
+                            color: white;
+                        }
+
+                    }
+                }
+            }
+
         }
 
         >a {
@@ -342,9 +442,9 @@ body {
                 display: flex;
                 align-items: center;
                 color: $gray_base;
-                font-weight: 600;
                 position: relative;
                 padding: 10px 12px 20px 12px;
+                font-weight: 600;
 
                 >div {
                     display: flex;
@@ -464,6 +564,127 @@ body {
     cursor: auto;
 }
 
+.shop-content {
+    cursor: auto;
+    position: fixed;
+    height: 100vh;
+    width: 250px;
+    background-color: white;
+    top: 0;
+    right: -250px;
+    transition: .5s;
+    opacity: 0;
+    z-index: 5;
+    padding: 0 10px;
+
+    hr {
+        opacity: .3;
+        color: $gray_hover;
+        margin: 20px 0,
+    }
+
+    .car-list {
+        text-align: start;
+        margin: 20px 0;
+        height: calc(100vh - 90px);
+        overflow: auto;
+        color: $gray_hover;
+        cursor: auto;
+
+        >div {
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            font-size: 14px;
+            column-gap: 10px;
+
+            >img {
+                width: 100%;
+                cursor: pointer;
+            }
+
+            >div {
+                padding: 5px 0 0 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                >p {
+                    font-family: Avenir, Helvetica, Arial, sans-serif;
+                    font-weight: 400;
+                    font-size:.8em;
+                    letter-spacing: 2px;
+                }
+
+                >p:nth-of-type(2) {
+                    letter-spacing: 1px;
+                    color:rgba(0,0,0,.8);
+                    font-size: 12px;
+                    display: flex;
+                    justify-content: space-between;
+
+                    >span:nth-of-type(1) {
+
+                        >span {
+                            margin: 0 5px;
+                        }
+                    }
+
+                    >span:nth-of-type(2) {
+                        margin-right: 5px;
+
+                        i {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+            }
+
+            >hr {
+                grid-row-start: 2;
+                grid-column: 1/3;
+                height: .5px;
+            }
+        }
+    }
+
+    button {
+        font-weight: 600;
+        width: 220px;
+        height: 40px;
+        border-radius: 5px;
+        border-color: rgba(200, 200, 200, .6);
+        border-width: 1px;
+        border-style: solid;
+        cursor: pointer;
+        transition: .3s;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        font-weight: 400;
+        font-size: 14px;
+    }
+
+    button:hover {
+        background-color: $gray_hover;
+        color: white;
+    }
+}
+
+.shop-car.active {
+    .shop-content {
+        opacity: 1;
+        right: 0;
+
+    }
+
+    .dark-bg {
+        opacity: 1;
+        display: block;
+        pointer-events: all;
+        cursor: pointer;
+        z-index: 3;
+    }
+}
+
 #menus {
     hr {
         display: none;
@@ -480,9 +701,9 @@ body {
             padding: 0;
 
             .icons {
-                grid-template-columns: repeat(5, 20px);
-                font-size: 1.1em;
+                grid-template-columns: repeat(5, 30px);
                 right: 0px;
+                font-size: 1.3em;
 
                 i:nth-of-type(2) {
                     display: none;

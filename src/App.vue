@@ -50,6 +50,10 @@ footer {
     display: block;
 }
 
+footer{
+    height: 50vh;
+}
+
 * {
     padding: 0;
     margin: 0;
