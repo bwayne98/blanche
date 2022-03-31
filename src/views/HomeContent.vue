@@ -58,21 +58,25 @@ export default {
         let set_section;
         const onScroll = () => {
 
+            let href = window.location.pathname;
+
+            console.log(href)
+
             if (scrolling.value) {
                 return
             }
             scrolling.value = true;
             let range = (window.innerWidth / 10);
             if (scrollY < range) {
-                history.replaceState('', '', '/')
+                history.replaceState('', '', href)
             }
 
             if (desert_section.offsetTop < (scrollY + range)) {
-                history.replaceState('', '', '/#desert')
+                history.replaceState('', '', href + '#desert')
             }
 
             if (set_section.offsetTop < (scrollY + range)) {
-                history.replaceState('', '', '/#set')
+                history.replaceState('', '', href + '#set')
             }
 
             setTimeout(() => {
