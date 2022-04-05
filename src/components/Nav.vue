@@ -40,7 +40,7 @@
             </i>
             <i class="fa-solid fa-bars sidebar-controller" @click="(e)=>showSide(e)"></i>
         </div>
-        <a href="/"><img src="https://img.shoplineapp.com/media/image_clips/6177d14056a0c000203d646c/original.png?1635242304" alt="Logo"></a>
+        <router-link :to="{name:'home'}" @click="BODY.classList.remove('scroll')"><img src="https://img.shoplineapp.com/media/image_clips/6177d14056a0c000203d646c/original.png?1635242304" alt="Logo"></router-link>
         <div class="top-arrow" @click="topArrow">
             <i class="fa-solid fa-arrow-up"></i>
         </div>
@@ -148,24 +148,7 @@ import store from '../store/store.js'
 export default {
 
     setup() {
-        //scoll 位置偵測
-        window.addEventListener('scroll', () => {
-            let nav = document.getElementById('navbar')
-            if (window.scrollY > 50) {
-                nav.classList.add('scroll')
-            } else {
-                nav.classList.remove('scroll')
-            };
-        })
 
-        // document.body.addEventListener('touchmove', () => {
-        //     let nav = document.getElementById('navbar')
-        //     if (window.scrollY > 50) {
-        //         nav.classList.add('scroll')
-        //     } else {
-        //         nav.classList.remove('scroll')
-        //     };
-        // })
         //search bar controll
         const search_bar = ref(false);
         const clickSearch = (e) => {
@@ -236,8 +219,12 @@ export default {
         }
 
         const removeShopCar = (id) => {
-            store.dispatch('removeShopCar', {'id':id});
+            store.dispatch('removeShopCar', {
+                'id': id
+            });
         }
+
+        const BODY = document.body;
 
         return {
             clickSearch,
@@ -250,7 +237,8 @@ export default {
             shop_car,
             shop_car_number,
             shop_car_content,
-            shop_car_price
+            shop_car_price,
+            BODY
         }
     }
 }
@@ -301,7 +289,7 @@ body {
             >i {
                 padding: 5px;
                 cursor: pointer;
-                
+
             }
 
             i.search {
@@ -394,7 +382,7 @@ body {
                         border-radius: 50%;
 
                         >div {
-                            font-size: 1px;
+                            font-size: 12px;
                             color: white;
                         }
 
@@ -519,7 +507,7 @@ body {
 
 }
 
-.scroll {
+.scroll .navbar {
     background-color: rgba(255, 255, 255, 0.95);
     height: 100px;
     transition: background-color 0.5s;
@@ -611,13 +599,13 @@ body {
                 >p {
                     font-family: Avenir, Helvetica, Arial, sans-serif;
                     font-weight: 400;
-                    font-size:.8em;
+                    font-size: .8em;
                     letter-spacing: 2px;
                 }
 
                 >p:nth-of-type(2) {
                     letter-spacing: 1px;
-                    color:rgba(0,0,0,.8);
+                    color: rgba(0, 0, 0, .8);
                     font-size: 12px;
                     display: flex;
                     justify-content: space-between;
@@ -686,12 +674,34 @@ body {
 }
 
 #menus {
+    z-index: 15;
+
     hr {
         display: none;
     }
 }
 
 @media (max-width: 1200px) {
+    .scroll .navbar {
+        height: 60px;
+
+        >.container {
+            padding: 0;
+
+            >a {
+                display: flex;
+                height: 100%;
+
+                >img {
+                    height: 44px;
+                    width: 44px;
+                    margin: auto 15px auto 15px;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
     .navbar {
         height: 60px;
 
@@ -742,6 +752,9 @@ body {
             }
 
             >a {
+                display: flex;
+                height: 100%;
+
                 >img {
                     height: 44px;
                     width: 44px;
@@ -793,7 +806,7 @@ body {
                     justify-content: space-between;
                 }
 
-                >ul {
+                >ul.sub-list {
                     display: block;
                     opacity: 1;
                     background-color: white;

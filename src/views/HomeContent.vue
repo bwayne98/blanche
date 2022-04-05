@@ -57,10 +57,15 @@ export default {
         let desert_section;
         let set_section;
         const onScroll = () => {
-
+            //navbar scroll偵測
+            let body = document.querySelector('body')
+            if (window.scrollY > 50) {
+                body.classList.add('scroll')
+            } else {
+                body.classList.remove('scroll')
+            };
+            //#的事件偵測
             let href = window.location.pathname;
-
-            console.log(href)
 
             if (scrolling.value) {
                 return
@@ -68,15 +73,15 @@ export default {
             scrolling.value = true;
             let range = (window.innerWidth / 10);
             if (scrollY < range) {
-                history.replaceState('', '', href)
+                history.replaceState(history.state, '', href)
             }
 
             if (desert_section.offsetTop < (scrollY + range)) {
-                history.replaceState('', '', href + '#desert')
+                history.replaceState(history.state, '', href + '#desert')
             }
 
             if (set_section.offsetTop < (scrollY + range)) {
-                history.replaceState('', '', href + '#set')
+                history.replaceState(history.state, '', href + '#set')
             }
 
             setTimeout(() => {
@@ -89,6 +94,7 @@ export default {
             set_section = document.getElementById('set');
             desert_section = document.getElementById('desert');
             window.addEventListener('scroll', onScroll)
+
         });
 
         onUnmounted(() => {

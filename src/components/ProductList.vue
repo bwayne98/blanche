@@ -2,7 +2,7 @@
 <div class="product">
     <div class="image">
         <img :src="require('../../public/images/' + url + '/' + id + '.png')" alt="">
-        <div></div>
+        <router-link :to="{ name: 'product', params:{'id':id} }"></router-link>
         <button type="button" @click="pushShopCar" :disabled="clicked">加入購物車</button>
     </div>
 
@@ -69,8 +69,8 @@ export default {
             width: 100%;
             z-index: -10;
         }
-
-        >div {
+        
+        >a {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -119,6 +119,7 @@ export default {
         border-radius: 3px;
         display: none;
         font-size: 1.1em;
+        background-color: rgb(240, 240, 240);
         color: rgb(100, 100, 100);
         cursor: pointer;
     }
@@ -140,7 +141,7 @@ export default {
         color: white;
     }
 
-    >div {
+    >a {
         background-color: rgba(0, 0, 0, 0.6);
     }
 
@@ -148,7 +149,7 @@ export default {
 
 @media (max-width: 800px) {
     .product {
-        button {
+        >button {
             display: block;
         }
     }
