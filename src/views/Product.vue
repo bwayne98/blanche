@@ -104,34 +104,49 @@ export default {
                 price: 680,
             },
         ];
-
+        //獲取params
         const ROUTE = useRoute();
         const ID = ROUTE.params.id;
+
+        //綁定navbar scroll class
         const BODY = document.body;
+
+        //圖片選擇控制
         const small_images_select_index = ref(0);
 
         let small_images_container, small_images;
 
         const selectImage = (boolean) => {
+
+            small_images_select_index.value = boolean ? small_images_select_index.value - 1 : small_images_select_index.value + 1;
+
+            let image_top = small_images[small_images_select_index.value].offsetTop - 50;
+            let image_bottom = small_images[small_images_select_index.value].offsetHeight + small_images[small_images_select_index.value].offsetTop - small_images_container.offsetHeight - 20;
+
+            let scroll_top = small_images_container.scrollTop;
+            let container_height = small_images_container.offsetHeight;
+
             if (boolean) {
-                small_images_select_index.value -= 1;
-                small_images_container.scrollTop = Math.min(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetTop - 50);
+                if (image_top - scroll_top > container_height) {
+                    small_images_container.scrollTop = image_bottom;
+                } else {
+                    small_images_container.scrollTop = Math.min(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetTop - 50);
+                }
             } else {
-                small_images_select_index.value += 1;
+                if (scroll_top - image_bottom > container_height) {
+                    small_images_container.scrollTop = image_top;
+                }
                 small_images_container.scrollTop = Math.max(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetHeight + small_images[small_images_select_index.value].offsetTop - small_images_container.offsetHeight - 20);
             }
         }
 
         const clickImage = (index) => {
-
             let num = parseInt(index);
-
             if (num === small_images_select_index.value) {
                 return;
             }
 
             let diff = num - small_images_select_index.value;
-
             small_images_select_index.value = num;
 
             if (diff < 0) {
@@ -141,20 +156,22 @@ export default {
             }
         }
 
+        //加入購物車
         const order_number = ref(1);
 
         const checkOrderNumber = () => {
-            if (order_number.value === NaN || order_number.value === "" ){
+            if (order_number.value === NaN || order_number.value === "") {
                 order_number.value = 1;
-            }else{
+            } else if (order_number.value < 1) {
+                order_number.value = 1
+            } else {
                 order_number.value = Math.floor(order_number.value)
             }
         }
 
-        const clickOrderNumber = (boolean) =>{
+        const clickOrderNumber = (boolean) => {
             order_number.value = boolean ? order_number.value + 1 : order_number.value - 1;
         }
-
 
         onMounted(() => {
             BODY.classList.add("scroll");
@@ -239,11 +256,6 @@ export default {
         height: 332px;
         display: grid;
         row-gap: 5px;
-
-        span {
-            color: black;
-            z-index: 10;
-        }
 
         >button {
             border-style: none;
@@ -330,18 +342,18 @@ export default {
         border-radius: 3px;
         // place-items: center;
 
-        button{
-            border-style:none ;
+        button {
+            border-style: none;
             font-size: 20px;
             font-weight: 600;
             cursor: pointer;
         }
 
-        button:disabled{
+        button:disabled {
             pointer-events: none;
         }
 
-        button:nth-of-type(1){
+        button:nth-of-type(1) {
             padding: 0 0 5px 0;
         }
 
@@ -349,7 +361,7 @@ export default {
             border-style: none;
             outline-style: none;
             width: 100%;
-            
+
             padding: 0 10px;
         }
 
