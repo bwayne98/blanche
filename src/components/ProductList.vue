@@ -34,7 +34,8 @@ export default {
                 url: prop.url,
                 id: prop.id,
                 product_name: prop.product_name,
-                price: prop.price
+                price: prop.price,
+                count: 1
             })
             setTimeout(() => {
                 clicked.value = false;

@@ -10,26 +10,14 @@
     </div>
 
     <div class="product-info">
+        <!-- 上半部  -->
         <div>
-            <div class="image-section">
-                <div>
-                    <button @click="selectImage(true)" :disabled="small_images_select_index === 0"><i class="fa-solid fa-chevron-up"></i></button>
-                    <div id="small-images">
-                        <img v-for="(pic,index) in 8" :key="'small-image' + index" :src="require('../../public/images/product/1.png')" alt="" :class="{selected : small_images_select_index === index }" :style="{opacity : 1 - (index + 1) * 0.1}" @click="clickImage(index)">
-                    </div>
-
-                    <button @click="selectImage(false)" :disabled="small_images_select_index === 7"><i class="fa-solid fa-chevron-down"></i></button>
-                </div>
-                <img :src="require('../../public/images/product/1.png')" alt="" :style="{opacity : 1 - small_images_select_index * 0.1 + 0.1 }">
-                <div class="share-bar">
-                    分享到
-                </div>
-            </div>
+            <ImageSelector :id="ID" :url="URL"></ImageSelector>
             <div class="info-section">
-                <h1>Kiss Me</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, aspernatur.</p>
+                <h1>{{ product_filted.product_name }}</h1>
+                <p>Lorem ipsum dolor sit amet.</p>
                 <hr>
-                <p>NT$130</p>
+                <p>NT${{ product_filted.price }}</p>
                 <p>數量</p>
                 <div>
                     <button @click="clickOrderNumber(false)" :disabled="order_number <= 1"> – </button>
@@ -37,27 +25,43 @@
                     <button @click="clickOrderNumber(true)"> + </button>
                 </div>
 
-                <button>加入購物車</button>
+                <button @click="pushShopCar()">加入購物車</button>
             </div>
         </div>
+        <!-- 下半部  -->
     </div>
     <div class="description">3</div>
 </div>
 </template>
 
 <script>
+import ImageSelector from '../components/ImageSelector.vue'
+
 import {
     onMounted,
-    ref
+    ref,
+    computed
 } from "vue";
 
 import {
     useRoute
 } from 'vue-router';
 
+import store from '../store/store.js'
+
 export default {
 
     setup(prop) {
+
+        //獲取params
+        const ROUTE = useRoute();
+        const ID = ROUTE.params.id;
+
+        const URL = computed(() => {
+            return ID > 100 ? 'product_set' : 'product'
+        })
+
+        //物品清單
         const products = [{
                 id: 1,
                 product_name: "Kiss me",
@@ -104,59 +108,12 @@ export default {
                 price: 680,
             },
         ];
-        //獲取params
-        const ROUTE = useRoute();
-        const ID = ROUTE.params.id;
 
-        //綁定navbar scroll class
-        const BODY = document.body;
+        const product_filted = products.filter((item) => {
+            return item.id === parseInt(ID);
+        })[0];
 
-        //圖片選擇控制
-        const small_images_select_index = ref(0);
-
-        let small_images_container, small_images;
-
-        const selectImage = (boolean) => {
-
-            small_images_select_index.value = boolean ? small_images_select_index.value - 1 : small_images_select_index.value + 1;
-
-            let image_top = small_images[small_images_select_index.value].offsetTop - 50;
-            let image_bottom = small_images[small_images_select_index.value].offsetHeight + small_images[small_images_select_index.value].offsetTop - small_images_container.offsetHeight - 20;
-
-            let scroll_top = small_images_container.scrollTop;
-            let container_height = small_images_container.offsetHeight;
-
-            if (boolean) {
-                if (image_top - scroll_top > container_height) {
-                    small_images_container.scrollTop = image_bottom;
-                } else {
-                    small_images_container.scrollTop = Math.min(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetTop - 50);
-                }
-            } else {
-                if (scroll_top - image_bottom > container_height) {
-                    small_images_container.scrollTop = image_top;
-                }
-                small_images_container.scrollTop = Math.max(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetHeight + small_images[small_images_select_index.value].offsetTop - small_images_container.offsetHeight - 20);
-            }
-        }
-
-        const clickImage = (index) => {
-            let num = parseInt(index);
-            if (num === small_images_select_index.value) {
-                return;
-            }
-
-            let diff = num - small_images_select_index.value;
-            small_images_select_index.value = num;
-
-            if (diff < 0) {
-                small_images_container.scrollTop = Math.min(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetTop - 50);
-            } else {
-                small_images_container.scrollTop = Math.max(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetHeight + small_images[small_images_select_index.value].offsetTop - small_images_container.offsetHeight - 20);
-            }
-        }
-
-        //加入購物車
+        // 加入購物車
         const order_number = ref(1);
 
         const checkOrderNumber = () => {
@@ -173,24 +130,37 @@ export default {
             order_number.value = boolean ? order_number.value + 1 : order_number.value - 1;
         }
 
+        const pushShopCar = () => {
+            store.dispatch('pushShopCar', {
+                id: product_filted.id,
+                product_name: product_filted.product_name,
+                price: product_filted.price,
+                url: URL,
+                count: order_number.value
+            })
+        }
+
+        //綁定navbar scroll class
+        const BODY = document.body;
+
         onMounted(() => {
             BODY.classList.add("scroll");
-
-            small_images_container = document.getElementById('small-images');
-            small_images = small_images_container.children;
         });
 
         return {
             ID,
+            URL,
             BODY,
-            small_images_select_index,
+            product_filted,
             order_number,
-            selectImage,
-            clickImage,
             checkOrderNumber,
             clickOrderNumber,
+            pushShopCar
         }
     },
+    components: {
+        'ImageSelector': ImageSelector
+    }
 };
 </script>
 

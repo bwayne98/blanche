@@ -49,7 +49,7 @@
             <ul class="main-list">
                 <li>
                     <div>
-                        <div> <a href="#desert"> 甜點 </a> </div> <i class="fa-solid fa-angle-down"></i>
+                        <div> <router-link :to="{name:'home', hash:'#desert'}"> 甜點 </router-link> </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -62,7 +62,7 @@
                 </li>
                 <li>
                     <div>
-                        <div> <a href="#set"> 禮盒 </a></div> <i class="fa-solid fa-angle-down"></i>
+                        <div> <router-link :to="{name:'home', hash:'#set'}"> 禮盒 </router-link></div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -145,6 +145,8 @@ import {
 
 import store from '../store/store.js'
 
+import {useRouter} from 'vue-router'
+
 export default {
 
     setup() {
@@ -225,6 +227,7 @@ export default {
         }
 
         const BODY = document.body;
+        const ROUTER = useRouter();
 
         return {
             clickSearch,
@@ -238,7 +241,8 @@ export default {
             shop_car_number,
             shop_car_content,
             shop_car_price,
-            BODY
+            BODY,
+            ROUTER
         }
     }
 }

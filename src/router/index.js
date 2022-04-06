@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeContent from "../views/HomeContent";
-import Product from "../views/Product";
+import Product from "../views/ProductPage";
 
 const routes = [
   {
@@ -32,21 +32,21 @@ const router = createRouter({
       return new Promise((resolve, reject) => {
           setTimeout(()=>{
             resolve(savedPosition);
-          },500)
+          },200)
       });
     }
     if (to.hash) {
       return new Promise((resolve, reject) => {
         setTimeout(()=>{
           resolve({el: to.hash});
-        },500)
+        },200)
       });
     }
     if (to.params.savedPosition){
       return new Promise((resolve, reject) => {
         setTimeout(()=>{
           resolve(to.params.savedPosition);
-        },500)
+        },200)
       });
     }
 

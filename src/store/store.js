@@ -42,10 +42,9 @@ export default createStore({
         return item.id === payload.id;
       });
       if (index === -1) {
-        payload.count = 1;
         commit("setShopCar", [...state.shop_car, payload]);
       }else{
-        commit('setShopCarCount' , {'index': index, 'count': state.shop_car[index].count+1})
+        commit('setShopCarCount' , {'index': index, 'count': state.shop_car[index].count + payload.count})
       }
     },
     removeShopCar({ state, commit }, payload) {
