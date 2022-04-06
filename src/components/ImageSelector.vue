@@ -1,5 +1,5 @@
 <template>
-<div class="image-section">
+<div class="image-selector">
     <div>
         <button @click="selectImage(true)" :disabled="small_images_select_index === 0"><i class="fa-solid fa-chevron-up"></i></button>
         <div id="small-images">
@@ -10,7 +10,7 @@
     </div>
     <img :src="require('../../public/images/'+ url +'/' + id + '.png')" alt="" :style="{opacity : 1 - small_images_select_index * 0.1 + 0.1 }">
     <div class="share-bar">
-        分享到
+        <ShareBar></ShareBar>
     </div>
 </div>
 </template>
@@ -21,18 +21,20 @@ import {
     onMounted
 } from 'vue'
 
+import ShareBar from '../components/ShareBar.vue'
+
 export default {
-    props:['id', 'url'],
+    props: ['id', 'url'],
     setup(prop) {
         //圖片選擇控制
-        const small_images_count = ref(9);
-        const small_images_select_index = ref(0);
+        const small_images_count = ref(9); //圖片數量
+        const small_images_select_index = ref(0); //目前選取的圖片
 
         let small_images_container, small_images;
 
         const selectImage = (boolean) => {
 
-            small_images_select_index.value = boolean ? small_images_select_index.value - 1 : small_images_select_index.value + 1;
+            small_images_select_index.value = boolean ? small_images_select_index.value - 1 : small_images_select_index.value + 1; // 上下選擇
 
             let image_top = small_images[small_images_select_index.value].offsetTop - 50;
             let image_bottom = small_images[small_images_select_index.value].offsetHeight + small_images[small_images_select_index.value].offsetTop - small_images_container.offsetHeight - 20;
@@ -41,20 +43,20 @@ export default {
             let container_height = small_images_container.offsetHeight;
 
             if (boolean) {
-                if (image_top - scroll_top > container_height) {
+                if (image_top - scroll_top > container_height) { //圖片在選單之外
                     small_images_container.scrollTop = image_bottom;
                 } else {
                     small_images_container.scrollTop = Math.min(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetTop - 50);
                 }
             } else {
-                if (scroll_top - image_bottom > container_height) {
+                if (scroll_top - image_bottom > container_height) { //圖片在選單之外
                     small_images_container.scrollTop = image_top;
                 }
                 small_images_container.scrollTop = Math.max(small_images_container.scrollTop, small_images[small_images_select_index.value].offsetHeight + small_images[small_images_select_index.value].offsetTop - small_images_container.offsetHeight - 20);
             }
         }
 
-        const clickImage = (index) => {
+        const clickImage = (index) => { //手動選擇圖片
             let num = parseInt(index);
             if (num === small_images_select_index.value) {
                 return;
@@ -83,15 +85,17 @@ export default {
             clickImage,
         }
     },
+    components: {
+        'ShareBar' : ShareBar
+    }
 }
 </script>
 
 <style lang="scss" scoped>
-.image-section {
+.image-selector {
     display: grid;
     column-gap: 20px;
     grid-template-columns: 72px 1fr;
-    padding: 30px 10px;
 
     >div:nth-of-type(1) {
         position: relative;
@@ -136,7 +140,6 @@ export default {
                 outline-color: rgba(150, 150, 150, 1);
             }
         }
-
     }
 
     >img {
@@ -151,9 +154,7 @@ export default {
 }
 
 @media (max-width:600px) {
-    .image-section {
-        padding: 30px 0;
-
+    .image-selector {
         >div:nth-of-type(1) {
             position: relative;
             height: 285px;
@@ -164,8 +165,7 @@ export default {
 }
 
 @media (max-width:400px) {
-    .image-section {
-        padding: 30px 0;
+    .image-selector {
         grid-template-columns: 1fr;
 
         >div:nth-of-type(1) {

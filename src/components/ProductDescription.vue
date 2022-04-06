@@ -1,0 +1,4 @@
+<template>
+    <p>商品描述</p>
+</template>
+

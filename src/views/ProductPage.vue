@@ -12,7 +12,10 @@
     <div class="product-info">
         <!-- 上半部  -->
         <div>
-            <ImageSelector :id="ID" :url="URL"></ImageSelector>
+            <div class="image-section">
+                <ImageSelector :id="ID" :url="URL"></ImageSelector>
+            </div>
+
             <div class="info-section">
                 <h1>{{ product_filted.product_name }}</h1>
                 <p>Lorem ipsum dolor sit amet.</p>
@@ -25,17 +28,27 @@
                     <button @click="clickOrderNumber(true)"> + </button>
                 </div>
 
-                <button @click="pushShopCar()">加入購物車</button>
+                <button @click="pushShopCar()" :disabled="pushing">加入購物車</button>
             </div>
         </div>
-        <!-- 下半部  -->
     </div>
-    <div class="description">3</div>
+    <!-- 下半部  -->
+    <div class="product-description">
+        <div class="switch">
+            <button :class="{active: current_section === 'ProductDescription'}" @click="current_section = 'ProductDescription'">商品描述</button>
+            <button :class="{active: current_section === 'ProductShipInfo'}" @click="current_section = 'ProductShipInfo'">送貨及付款方式</button>
+            <hr>
+            <component :is='current_section'></component>
+        </div>
+
+    </div>
 </div>
 </template>
 
 <script>
-import ImageSelector from '../components/ImageSelector.vue'
+import ImageSelector from '../components/ImageSelector.vue';
+import ProductDescription from '../components/ProductDescription.vue';
+import ProductShipInfo from '../components/ProductShipInfo.vue';
 
 import {
     onMounted,
@@ -130,7 +143,10 @@ export default {
             order_number.value = boolean ? order_number.value + 1 : order_number.value - 1;
         }
 
+        const pushing = ref(false);
+
         const pushShopCar = () => {
+            pushing.value = true;
             store.dispatch('pushShopCar', {
                 id: product_filted.id,
                 product_name: product_filted.product_name,
@@ -138,6 +154,9 @@ export default {
                 url: URL,
                 count: order_number.value
             })
+            setTimeout(() => {
+                pushing.value = false;
+            }, 1000);
         }
 
         //綁定navbar scroll class
@@ -147,19 +166,28 @@ export default {
             BODY.classList.add("scroll");
         });
 
+        //section select
+
+        const current_section = ref('ProductDescription');
+
         return {
             ID,
             URL,
             BODY,
             product_filted,
             order_number,
+            pushing,
+            current_section,
+
             checkOrderNumber,
             clickOrderNumber,
             pushShopCar
         }
     },
     components: {
-        'ImageSelector': ImageSelector
+        'ImageSelector': ImageSelector,
+        'ProductDescription': ProductDescription,
+        'ProductShipInfo': ProductShipInfo
     }
 };
 </script>
@@ -210,66 +238,13 @@ export default {
         width: 1200px;
         max-width: 100vw;
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.2fr 1fr;
         padding: 10px 100px;
     }
 }
 
 .image-section {
-    display: grid;
-    column-gap: 20px;
-    grid-template-columns: 72px 1fr;
-    padding: 30px 10px;
-
-    >div:nth-of-type(1) {
-        position: relative;
-        height: 332px;
-        display: grid;
-        row-gap: 5px;
-
-        >button {
-            border-style: none;
-            background-color: rgba(200, 200, 200, .6);
-            color: rgba(0, 0, 0, .5);
-            height: 30px;
-            cursor: pointer;
-        }
-
-        >button:hover {
-            background-color: rgba(50, 50, 50, .6);
-            color: white;
-        }
-
-        >button:disabled {
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
-        >div {
-            display: grid;
-            grid-template-columns: 1fr;
-            row-gap: 5px;
-            padding: 2px;
-            overflow: auto;
-
-            >img {
-                cursor: pointer;
-                outline-width: 2px;
-                width: 100%;
-            }
-
-            >img.selected {
-
-                outline-style: solid;
-                outline-color: rgba(150, 150, 150, 1);
-            }
-        }
-
-    }
-
-    >img {
-        width: 100%;
-    }
+    padding: 30px 0px;
 }
 
 .share-bar {
@@ -362,6 +337,64 @@ export default {
         border-color: gray;
     }
 
+    >button:disabled {
+        pointer-events: none;
+    }
+
+}
+
+.product-description {
+    width: 100vw;
+    // background-color: gray;
+}
+
+.switch {
+    width: 1000px;
+    max-width: 100vw;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+
+    >button {
+        position: relative;
+        width: 50%;
+        border-style: none;
+        height: 40px;
+        background-color: transparent;
+        color: rgba(100, 100, 100, .5);
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    >button.active {
+        color: rgba(100, 100, 100, .8);
+    }
+
+    >button::after {
+        position: absolute;
+        content: '';
+        bottom: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(100, 100, 100, .8);
+        width: 0px;
+        height: 3px;
+        transition: 0.2s;
+    }
+
+    >button.active::after {
+        width: 100px;
+    }
+
+    >button:nth-of-type(2).active::after {
+        width: 160px;
+    }
+
+    >hr {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
 }
 
 @media (max-width:1000px) {
@@ -369,13 +402,21 @@ export default {
         margin-top: 60px;
     }
 
+    .image-section {
+        padding: 0;
+    }
+
     .product-info {
 
         >div {
             place-content: center;
-            grid-template-columns: 600px;
+            grid-template-columns: 580px;
             padding: 10px 10px;
         }
+    }
+
+    .switch {
+        width: 600px;
     }
 
 }
@@ -392,30 +433,23 @@ export default {
         }
     }
 
-    .image-section {
-        padding: 30px 0;
-
-        >div:nth-of-type(1) {
-            position: relative;
-            height: 285px;
-            overflow: scroll;
-
-        }
+    .info-section{
+        padding: 20px 0;
     }
-}
-
-@media (max-width:400px) {
     .image-section {
-        padding: 30px 0;
-        grid-template-columns: 1fr;
-
-        >div:nth-of-type(1) {
-            display: none;
-        }
+        padding: 0;
     }
 
-    .share-bar {
-        grid-column: 1/2;
+    .switch {
+        >button{
+            font-size:16px;
+        }
+        >button:nth-of-type(1).active::after{
+            width: 80px;
+        }
+        >button:nth-of-type(2).active::after{
+            width: 130px;
+        }
     }
 }
 </style>
