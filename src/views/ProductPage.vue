@@ -53,7 +53,9 @@ import ProductShipInfo from '../components/ProductShipInfo.vue';
 import {
     onMounted,
     ref,
-    computed
+    computed,
+    toRef,
+    watch
 } from "vue";
 
 import {
@@ -68,10 +70,10 @@ export default {
 
         //獲取params
         const ROUTE = useRoute();
-        const ID = ROUTE.params.id;
+        let ID = ROUTE.params.id;
 
         const URL = computed(() => {
-            return ID > 100 ? 'product_set' : 'product'
+            return parseInt(ID) > 100 ? 'product_set' : 'product'
         })
 
         //物品清單
@@ -164,6 +166,9 @@ export default {
 
         onMounted(() => {
             BODY.classList.add("scroll");
+            ID = computed(()=>{
+                return ROUTE.params.id
+            })
         });
 
         //section select
@@ -433,21 +438,24 @@ export default {
         }
     }
 
-    .info-section{
+    .info-section {
         padding: 20px 0;
     }
+
     .image-section {
         padding: 0;
     }
 
     .switch {
-        >button{
-            font-size:16px;
+        >button {
+            font-size: 16px;
         }
-        >button:nth-of-type(1).active::after{
+
+        >button:nth-of-type(1).active::after {
             width: 80px;
         }
-        >button:nth-of-type(2).active::after{
+
+        >button:nth-of-type(2).active::after {
             width: 130px;
         }
     }

@@ -4,11 +4,23 @@
         <div class="icons">
 
             <i class="fa-solid fa-magnifying-glass search" @click="(e)=>clickSearch(e)" :class="{active : search_bar}">
-                <input type="text" placeholder="找商品">
-                <div @click.prevent.stop class="search-bar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="找商品">
+                <div class="small-search">
+                    <input type="text" placeholder="找商品" v-model="search_input">
+                    <div>
+                        <div v-for="item in search_result" :key="item.id"><router-link :to="{name:'product',params:{id:item.id}}">{{ item.product_name }}</router-link></div>
+                    </div>
                 </div>
+                <div class="large-search" @click.prevent.stop>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <div>
+                        <input type="text" placeholder="找商品" v-model="search_input">
+                        <div>
+                            <div v-for="item in search_result" :key="item.id" @click="clicktest(item.product_name)">{{ item.product_name }}</div>
+                        </div>
+
+                    </div>
+                </div>
+
                 <div class="dark-bg"></div>
             </i>
             <i class="fa-solid fa-comment"></i>
@@ -49,7 +61,9 @@
             <ul class="main-list">
                 <li>
                     <div>
-                        <div> <router-link :to="{name:'home', hash:'#desert'}"> 甜點 </router-link> </div> <i class="fa-solid fa-angle-down"></i>
+                        <div>
+                            <router-link :to="{name:'home', hash:'#desert'}"> 甜點 </router-link>
+                        </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -62,7 +76,9 @@
                 </li>
                 <li>
                     <div>
-                        <div> <router-link :to="{name:'home', hash:'#set'}"> 禮盒 </router-link></div> <i class="fa-solid fa-angle-down"></i>
+                        <div>
+                            <router-link :to="{name:'home', hash:'#set'}"> 禮盒 </router-link>
+                        </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -140,18 +156,21 @@
 import {
     ref,
     computed,
-    reactive
+    reactive,
+    watch
 } from 'vue';
 
 import store from '../store/store.js'
 
-import {useRouter} from 'vue-router'
+import {
+    useRouter
+} from 'vue-router'
 
 export default {
 
     setup() {
 
-        //search bar controll
+        //search bar control
         const search_bar = ref(false);
         const clickSearch = (e) => {
             e.stopPropagation();
@@ -165,6 +184,73 @@ export default {
             }
         }
 
+        const products = [{
+                id: 1,
+                product_name: "Kiss me",
+                price: 130,
+            },
+            {
+                id: 2,
+                product_name: "莓好時光",
+                price: 1080,
+            },
+            {
+                id: 3,
+                product_name: "季節限定草莓千層",
+                price: 230,
+            },
+            {
+                id: 4,
+                product_name: "季節草莓塔",
+                price: 220,
+            },
+            {
+                id: 5,
+                product_name: "娜特莉",
+                price: 130,
+            },
+            {
+                id: 10001,
+                product_name: "客製化禮盒",
+                price: 1300,
+            },
+            {
+                id: 10002,
+                product_name: "白甜點常溫禮盒",
+                price: 880,
+            },
+            {
+                id: 10003,
+                product_name: "月光 檸檬塔禮盒",
+                price: 1280,
+            },
+            {
+                id: 10004,
+                product_name: "可麗露禮盒",
+                price: 680,
+            },
+        ];
+
+        const search_input = ref('');
+
+        const search_result = ref([])
+        let timerID = null;
+
+        watch(search_input, (curr, old) => {
+            search_result.value = []
+            clearTimeout(timerID);
+
+            timerID = setTimeout(() => {
+                if (curr.trim() === '') return
+
+                search_result.value = products.filter((item) => {
+                    return item.product_name.indexOf(curr) !== -1
+                })
+            }, 2000);
+
+        })
+
+        //視窗大小有變動就把所有彈窗關閉
         window.addEventListener('resize', () => {
             document.documentElement.style.overflowY = 'auto';
             search_bar.value = false;
@@ -229,13 +315,20 @@ export default {
         const BODY = document.body;
         const ROUTER = useRouter();
 
+        const clicktest = (meg) => {
+            console.log(meg)
+        }
+
         return {
             clickSearch,
             topArrow,
             showSide,
             showShopCar,
             removeShopCar,
+            clicktest,
             search_bar,
+            search_input,
+            search_result,
             side_bar,
             shop_car,
             shop_car_number,
@@ -294,75 +387,6 @@ body {
                 padding: 5px;
                 cursor: pointer;
 
-            }
-
-            i.search {
-                position: relative;
-                z-index: 1;
-
-                >.search-bar {
-                    display: grid;
-                    grid-template-columns: 30px 1fr;
-                    column-gap: 10px;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100vw;
-                    height: 60px;
-                    background-color: white;
-                    padding: 20px 20px;
-                    transition: 0.5s;
-                    opacity: 0;
-                    pointer-events: none;
-
-                    >i {
-                        align-self: center;
-                    }
-
-                    >input {
-                        border-style: none none solid none;
-                        border-width: 1px;
-                        outline: none;
-                        font-size: 0.8em;
-                        color: $gray_hover;
-                    }
-                }
-
-                >input {
-                    background-color: transparent;
-                    border-style: none none solid none;
-                    border-width: 1px;
-                    border-color: $gray_base;
-                    bottom: 0;
-                    width: 0px;
-                    height: 80%;
-                    position: absolute;
-                    left: 0px;
-                    outline: none;
-                    color: $gray_base;
-                    transition: 0.4s linear;
-                    font-size: 0.9em;
-                }
-
-                >input::placeholder {
-                    color: $gray_base;
-                }
-
-                >input:focus {
-                    left: -120px;
-                    width: 120px;
-                }
-            }
-
-            i:hover {
-                color: $gray_hover;
-            }
-
-            i.search:hover {
-                >input {
-                    left: -120px;
-                    width: 120px;
-                }
             }
 
             i.shop-car {
@@ -556,6 +580,172 @@ body {
     cursor: auto;
 }
 
+i.search {
+    position: relative;
+    z-index: 1;
+}
+
+i:hover {
+    color: $gray_hover;
+
+    .small-search {
+        input {
+            width: 140px;
+            transform: translateX(-140px);
+            opacity: 1;
+        }
+
+        >div {
+            transform: translateX(-140px);
+            width: 140px;
+
+            div {
+                opacity: 1;
+                pointer-events: auto;
+                transition: 0.3s;
+            }
+
+        }
+    }
+}
+
+.small-search {
+
+    input:focus,
+    input:focus~div {
+        width: 140px;
+        transform: translateX(-140px);
+
+        div {
+            opacity: 1;
+            pointer-events: auto;
+            transition: 0.3s;
+        }
+
+    }
+}
+
+.small-search {
+
+    >input {
+        position: absolute;
+        left: 0;
+        top: 5px;
+        transition: .3s;
+        width: 0px;
+
+        background-color: transparent;
+        border-style: none none solid none;
+        border-color: $gray_base;
+        border-width: 1px;
+        outline-style: none;
+        color: $gray_base;
+        font-size: 14px;
+        opacity: 1;
+    }
+
+    >input::placeholder {
+        color: $gray_base;
+    }
+
+    >div {
+        position: absolute;
+        left: 0;
+        width: 0;
+        transition: 0.3s;
+        overflow: hidden;
+
+        >div {
+            font-family: Avenir, Helvetica, Arial, sans-serif;
+            white-space: nowrap;
+            font-size: 14px;
+            text-align: start;
+            color: $gray_base;
+            opacity: 0;
+            transition: 0.1s;
+            pointer-events: none;
+            padding: 5px 0 3px 5px;
+            border-radius: 0 0 2px 2px;
+            background-color: rgba(255, 255, 255, .3);
+            font-weight: 400;
+            text-shadow: 0 0 .5px rgba(0, 0, 0, .6);
+        }
+
+        >div:hover {
+            background-color: rgba(255, 255, 255, .1);
+        }
+    }
+}
+
+.large-search {
+    position: fixed;
+    left: 0;
+    top: -60px;
+    width: 100vw;
+    height: 60px;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    place-items: center;
+    background-color: white;
+    cursor: auto;
+
+    >i {
+        color: $gray_hover;
+        pointer-events: none;
+    }
+
+    >div {
+        width: 100%;
+        position: relative;
+
+        >input {
+            color: $gray_hover;
+            line-height: 20px;
+            font-size: 14px;
+            height: 20px;
+            width: 100%;
+            border-style: none none solid none;
+            border-width: 1px;
+            outline-style: none;
+            padding: 0 0 0 5px;
+        }
+
+        >div {
+            position: absolute;
+            left: 0;
+            top: 40px;
+            color: $gray_base;
+            width: 100%;
+            display: none;
+
+            >div {
+                font-family: Avenir, Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                font-weight: 400;
+                padding: 5px 0 3px 5px;
+                border-radius: 0 0 0 3px;
+                cursor: pointer;
+                text-align: start;
+                background-color: rgba(255, 255, 255, .6);
+            }
+
+            >div:hover {
+                background-color: rgba(255, 255, 255, .3);
+            }
+        }
+
+    }
+}
+
+.active .large-search {
+    top: 0px;
+    >div{
+        >div{
+            display: block;
+        }
+    }
+}
+
 .shop-content {
     cursor: auto;
     position: fixed;
@@ -727,27 +917,14 @@ body {
                     display: block;
                     grid-column: 4 / 6;
                 }
+            }
 
-                i.search:hover {
-                    >input {
-                        display: none;
-                    }
+            i.search.active {
+
+                .dark-bg {
+                    display: block;
+                    pointer-events: all;
                 }
-
-                i.search.active {
-                    >.search-bar {
-                        opacity: 1;
-                        pointer-events: all;
-                        cursor: auto;
-                    }
-
-                    .dark-bg {
-                        display: block;
-                        pointer-events: all;
-                    }
-
-                }
-
             }
 
             .top-arrow {
@@ -768,6 +945,18 @@ body {
             }
 
         }
+    }
+
+    i:hover {
+
+        .small-search {
+
+            div,
+            input {
+                display: none;
+            }
+        }
+
     }
 
     #menus {
