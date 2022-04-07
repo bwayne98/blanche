@@ -7,7 +7,7 @@
                 <div class="small-search">
                     <input type="text" placeholder="找商品" v-model="search_input">
                     <div>
-                        <div v-for="item in search_result" :key="item.id" @click="clicktest(item.id)">
+                        <div v-for="item in search_result" :key="item.id" @click="clickLink(item.id)">
                             {{ item.product_name }}
                         </div>
                     </div>
@@ -17,7 +17,7 @@
                     <div>
                         <input type="text" placeholder="找商品" v-model="search_input">
                         <div>
-                            <div v-for="item in search_result" :key="item.id" @click="clicktest(item.id)">
+                            <div v-for="item in search_result" :key="item.id" @click="clickLink(item.id)">
                                 {{ item.product_name }}
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                     <div v-if="shop_car_number === 0" style="margin-top:50vh"> 空的購物車 </div>
                     <div class="car-list">
                         <div v-for="product in shop_car_content" :key="product.id">
-                            <img :src="require('../../public/images/' + product.url + '/' + product.id + '.png')" alt="">
+                            <img :src="require('../../public/images/' + product.url + '/' + product.id + '.png')" alt="" @click="clickLink(product.id)">
                             <div>
                                 <p>{{ product.product_name }}</p>
                                 <p> <span> {{ product.count }} <span>x</span> NT${{ product.price }} </span> <span> <i @click="removeShopCar(product.id)" class="fa-solid fa-trash-can"></i></span></p>
@@ -111,7 +111,8 @@
             <ul class="main-list">
                 <li>
                     <div>
-                        <div> 甜點 </div> <i class="fa-solid fa-angle-down"></i>
+                        <router-link :to="{name:'home', hash:'#desert'}"> 甜點 </router-link>
+                        <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -124,7 +125,8 @@
                 </li>
                 <li>
                     <div>
-                        <div> 禮盒 </div> <i class="fa-solid fa-angle-down"></i>
+                        <router-link :to="{name:'home', hash:'#set'}"> 禮盒 </router-link>
+                        <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -254,27 +256,28 @@ export default {
 
         })
 
-        //search result click
-        const clicktest = (id) => {
+        const closeAllBlock = () => {
+            document.documentElement.style.overflowY = 'auto';
+            search_bar.value = false;
+            side_bar.value = false;
+            shop_car.value = false;
+        }
+
+        //search result click or shopcar img
+        const clickLink = (id) => {
             ROUTER.push({
                 name: 'product',
                 params: {
                     id: id
                 }
             });
-
-            document.documentElement.style.overflowY = 'auto';
-            search_bar.value = false;
-            side_bar.value = false;
-            document.querySelector('.shop-car').classList.remove('active')
+            //把所有彈窗關閉
+            closeAllBlock();
         }
 
         //視窗大小有變動就把所有彈窗關閉
         window.addEventListener('resize', () => {
-            document.documentElement.style.overflowY = 'auto';
-            search_bar.value = false;
-            side_bar.value = false;
-            document.querySelector('.shop-car').classList.remove('active')
+            closeAllBlock();
         })
 
         //scroll to Top
@@ -312,10 +315,12 @@ export default {
 
         const shop_car = ref(false)
         const showShopCar = (e) => {
-            // console.log(e);
+            //@click.prevent.stop -> 單純阻擋子元件冒泡事件
+
+            // 避免子元件造成連續點擊，且執行下方邏輯
             e.preventDefault();
             e.stopPropagation();
-            // not work , use @click.prevent.stop
+
             if (shop_car.value === false) {
                 document.documentElement.style.overflowY = 'hidden';
                 shop_car.value = true;
@@ -340,7 +345,7 @@ export default {
             showSide,
             showShopCar,
             removeShopCar,
-            clicktest,
+            clickLink,
             search_bar,
             search_input,
             search_result,
