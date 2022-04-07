@@ -7,7 +7,9 @@
                 <div class="small-search">
                     <input type="text" placeholder="找商品" v-model="search_input">
                     <div>
-                        <div v-for="item in search_result" :key="item.id"><router-link :to="{name:'product',params:{id:item.id}}">{{ item.product_name }}</router-link></div>
+                        <div v-for="item in search_result" :key="item.id" @click="clicktest(item.id)">
+                            {{ item.product_name }}
+                        </div>
                     </div>
                 </div>
                 <div class="large-search" @click.prevent.stop>
@@ -15,7 +17,9 @@
                     <div>
                         <input type="text" placeholder="找商品" v-model="search_input">
                         <div>
-                            <div v-for="item in search_result" :key="item.id" @click="clicktest(item.product_name)">{{ item.product_name }}</div>
+                            <div v-for="item in search_result" :key="item.id" @click="clicktest(item.id)">
+                                {{ item.product_name }}
+                            </div>
                         </div>
 
                     </div>
@@ -250,6 +254,21 @@ export default {
 
         })
 
+        //search result click
+        const clicktest = (id) => {
+            ROUTER.push({
+                name: 'product',
+                params: {
+                    id: id
+                }
+            });
+
+            document.documentElement.style.overflowY = 'auto';
+            search_bar.value = false;
+            side_bar.value = false;
+            document.querySelector('.shop-car').classList.remove('active')
+        }
+
         //視窗大小有變動就把所有彈窗關閉
         window.addEventListener('resize', () => {
             document.documentElement.style.overflowY = 'auto';
@@ -314,10 +333,6 @@ export default {
 
         const BODY = document.body;
         const ROUTER = useRouter();
-
-        const clicktest = (meg) => {
-            console.log(meg)
-        }
 
         return {
             clickSearch,
@@ -739,8 +754,9 @@ i:hover {
 
 .active .large-search {
     top: 0px;
-    >div{
-        >div{
+
+    >div {
+        >div {
             display: block;
         }
     }
