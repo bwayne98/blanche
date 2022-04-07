@@ -70,11 +70,9 @@ export default {
 
         //獲取params
         const ROUTE = useRoute();
-        let ID = ROUTE.params.id;
+        let ID = toRef(ROUTE.params, 'id');
 
-        const URL = computed(() => {
-            return parseInt(ID) > 100 ? 'product_set' : 'product'
-        })
+        const URL = ref(parseInt(ID.value) > 100 ? 'product_set' : 'product')
 
         //物品清單
         const products = [{
@@ -124,9 +122,9 @@ export default {
             },
         ];
 
-        const product_filted = products.filter((item) => {
-            return item.id === parseInt(ID);
-        })[0];
+        const product_filted = ref(products.filter((item) => {
+            return item.id === parseInt(ID.value);
+        })[0])
 
         // 加入購物車
         const order_number = ref(1);
@@ -150,10 +148,10 @@ export default {
         const pushShopCar = () => {
             pushing.value = true;
             store.dispatch('pushShopCar', {
-                id: product_filted.id,
-                product_name: product_filted.product_name,
-                price: product_filted.price,
-                url: URL,
+                id: product_filted.value.id,
+                product_name: product_filted.value.product_name,
+                price: product_filted.value.price,
+                url: URL.value,
                 count: order_number.value
             })
             setTimeout(() => {
@@ -166,14 +164,21 @@ export default {
 
         onMounted(() => {
             BODY.classList.add("scroll");
-            ID = computed(()=>{
-                return ROUTE.params.id
-            })
         });
 
         //section select
-
         const current_section = ref('ProductDescription');
+
+        //params偵測
+        watch(ROUTE, (to, old) => {
+            ID.value = to.params.id;
+            URL.value = parseInt(ID.value) > 100 ? 'product_set' : 'product';
+            product_filted.value = products.filter((item) => {
+                return item.id === parseInt(ID.value);
+            })[0];
+            order_number.value = 1;
+            current_section.value = 'ProductDescription';
+        })
 
         return {
             ID,
