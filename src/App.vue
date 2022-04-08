@@ -10,9 +10,50 @@
 
 <script>
 import Nav from './components/Nav.vue'
+import store from '@/store/store.js'
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+} from '@firebase/auth'
+import {
+    doc,
+    getDoc
+} from '@firebase/firestore'
+
+import db from './store/firestore'
+import { provide, ref } from 'vue'
 
 export default {
     setup() {
+
+        const auth = getAuth();
+        const login_state = ref(false);
+
+        onAuthStateChanged(auth, user => {
+
+            if (user) {
+                login_state.value = true;
+
+                getDoc(doc(db, 'blanche', 'member', auth.currentUser.uid, 'shopcar'))
+                    .then(res => {
+                        store.dispatch('updateShopCarFromFireBase', res.data().list)
+                    })
+                    .catch(err => console.log(err))
+            }else{
+                login_state.value = false;
+                store.dispatch('updateShopCarFromFireBase', [])  
+            }
+        })
+
+        const LogOut = () => {
+            signOut(auth).then(()=> history.go(0));
+
+        }
+
+        provide('LogOut',LogOut)
+        provide('login_state',login_state)
 
         return {}
     },
@@ -30,19 +71,21 @@ export default {
     text-align: center;
     color: rgb(100, 100, 100)
 }
-::-webkit-scrollbar{
-    width:0px;
+
+::-webkit-scrollbar {
+    width: 0px;
 }
+
 html {
     overflow-x: hidden;
     scroll-behavior: smooth;
     // -webkit-overflow-scrolling: touch;
-    
+
 }
 
 body {
     overflow-x: hidden;
-    
+
 }
 
 nav,
@@ -50,7 +93,7 @@ footer {
     display: block;
 }
 
-footer{
+footer {
     height: 50vh;
     background-color: transparent;
 }
