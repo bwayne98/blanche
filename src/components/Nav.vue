@@ -28,7 +28,13 @@
                 <div class="dark-bg"></div>
             </i>
             <i class="fa-solid fa-comment"></i>
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-solid fa-user user-icon">
+                <div>
+                    <button v-if="login_state" @click="LogOut">登出</button>
+                    <router-link :to="{name:'auth'}" v-else><button >登入</button></router-link>
+                    
+                </div>
+            </i>
             <i class="fa-solid fa-bag-shopping shop-car" @click="e => showShopCar(e)" :class="{active: shop_car}">
                 <div class="shop-count" v-show="shop_car_number !== 0">
                     <div>
@@ -165,7 +171,8 @@
 import {
     ref,
     computed,
-    watch
+    watch,
+    inject
 } from 'vue';
 
 import store from '../store/store.js'
@@ -179,7 +186,7 @@ export default {
 
     setup() {
 
-       //search bar control
+        //search bar control
         const search_bar = ref(false);
         const clickSearch = (e) => {
             e.stopPropagation();
@@ -295,6 +302,9 @@ export default {
         const BODY = document.body;
         const ROUTER = useRouter();
 
+        const login_state = inject('login_state');
+        const LogOut = inject('LogOut');
+
         return {
             clickSearch,
             topArrow,
@@ -311,7 +321,9 @@ export default {
             shop_car_content,
             shop_car_price,
             BODY,
-            ROUTER
+            ROUTER,
+            login_state,
+            LogOut
         }
     }
 }
@@ -720,6 +732,40 @@ i:hover {
         >div {
             display: block;
         }
+    }
+}
+
+.user-icon {
+    position: relative;
+
+    >div {
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%) translateY(0);
+        width: 80px;
+        height: 50px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, .2);
+        border-radius: 0 0 3px 3px;
+        cursor: auto;
+
+        button {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(100, 100, 100, .6);
+            border-style: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+    }
+}
+
+.user-icon:hover{
+    >div{
+        opacity: 1;
+        pointer-events: all;
     }
 }
 

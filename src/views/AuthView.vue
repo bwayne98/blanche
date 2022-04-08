@@ -12,10 +12,6 @@ import {
 } from 'vue';
 
 import {
-    db
-} from '../store/firestore'
-
-import {
     getAuth,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -25,15 +21,18 @@ import {
 import LoginForm from '@/components/LoginForm.vue';
 import RegistFormVue from '@/components/RegistForm.vue';
 
+import db from '@/store/firestore';
+
 export default {
     setup() {
-
         const email = ref('');
         const password = ref('');
         const confirm = ref('');
         const err_meg = ref('');
         const succ_meg = ref('');
         const auth = getAuth();
+
+        // console.log(auth.currentUser);
 
         provide('email', email);
         provide('password', password);
@@ -62,6 +61,12 @@ export default {
                     console.log(userCredential);
                     email.value = '';
                     password.value = '';
+
+                    // getDoc(doc(db, 'blanche', 'member', auth.currentUser.uid, 'shopcar'))
+                    //     .then(res => {
+                    //         store.dispatch('updateShopCarFromFireBase', res.data().list)
+                    //     }).catch(err => console.log(err))
+
                 })
                 .catch((error) => {
                     // const errorCode = error.code;
