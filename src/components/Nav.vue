@@ -111,8 +111,9 @@
             <ul class="main-list">
                 <li>
                     <div>
-                        <router-link :to="{name:'home', hash:'#desert'}"> 甜點 </router-link>
-                        <i class="fa-solid fa-angle-down"></i>
+                        <div>
+                            <router-link :to="{name:'home', hash:'#desert'}"> 甜點 </router-link>
+                        </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -125,8 +126,9 @@
                 </li>
                 <li>
                     <div>
-                        <router-link :to="{name:'home', hash:'#set'}"> 禮盒 </router-link>
-                        <i class="fa-solid fa-angle-down"></i>
+                        <div>
+                            <router-link :to="{name:'home', hash:'#set'}"> 禮盒 </router-link>
+                        </div> <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <ul class="sub-list">
                         <li>
@@ -140,6 +142,7 @@
                 <li>
                     <div> 客製化蛋糕 </div>
                 </li>
+
                 <li>
                     <div> 關於我們 </div>
                 </li>
@@ -162,11 +165,11 @@
 import {
     ref,
     computed,
-    reactive,
     watch
 } from 'vue';
 
 import store from '../store/store.js'
+import ProductData from '../store/ProdcutData.js';
 
 import {
     useRouter
@@ -176,7 +179,7 @@ export default {
 
     setup() {
 
-        //search bar control
+       //search bar control
         const search_bar = ref(false);
         const clickSearch = (e) => {
             e.stopPropagation();
@@ -190,53 +193,6 @@ export default {
             }
         }
 
-        const products = [{
-                id: 1,
-                product_name: "Kiss me",
-                price: 130,
-            },
-            {
-                id: 2,
-                product_name: "莓好時光",
-                price: 1080,
-            },
-            {
-                id: 3,
-                product_name: "季節限定草莓千層",
-                price: 230,
-            },
-            {
-                id: 4,
-                product_name: "季節草莓塔",
-                price: 220,
-            },
-            {
-                id: 5,
-                product_name: "娜特莉",
-                price: 130,
-            },
-            {
-                id: 10001,
-                product_name: "客製化禮盒",
-                price: 1300,
-            },
-            {
-                id: 10002,
-                product_name: "白甜點常溫禮盒",
-                price: 880,
-            },
-            {
-                id: 10003,
-                product_name: "月光 檸檬塔禮盒",
-                price: 1280,
-            },
-            {
-                id: 10004,
-                product_name: "可麗露禮盒",
-                price: 680,
-            },
-        ];
-
         const search_input = ref('');
 
         const search_result = ref([])
@@ -249,7 +205,7 @@ export default {
             timerID = setTimeout(() => {
                 if (curr.trim() === '') return
 
-                search_result.value = products.filter((item) => {
+                search_result.value = ProductData.filter((item) => {
                     return item.product_name.indexOf(curr) !== -1
                 })
             }, 2000);

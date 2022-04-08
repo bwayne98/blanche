@@ -50,10 +50,11 @@ import ImageSelector from '../components/ImageSelector.vue';
 import ProductDescription from '../components/ProductDescription.vue';
 import ProductShipInfo from '../components/ProductShipInfo.vue';
 
+import ProductData from '../store/ProdcutData.js';
+
 import {
     onMounted,
     ref,
-    computed,
     toRef,
     watch
 } from "vue";
@@ -70,59 +71,11 @@ export default {
 
         //獲取params
         const ROUTE = useRoute();
-        let ID = toRef(ROUTE.params, 'id');
+        const ID = ref(ROUTE.params.id);
 
         const URL = ref(parseInt(ID.value) > 100 ? 'product_set' : 'product')
 
-        //物品清單
-        const products = [{
-                id: 1,
-                product_name: "Kiss me",
-                price: 130,
-            },
-            {
-                id: 2,
-                product_name: "莓好時光",
-                price: 1080,
-            },
-            {
-                id: 3,
-                product_name: "季節限定草莓千層",
-                price: 230,
-            },
-            {
-                id: 4,
-                product_name: "季節草莓塔",
-                price: 220,
-            },
-            {
-                id: 5,
-                product_name: "娜特莉",
-                price: 130,
-            },
-            {
-                id: 10001,
-                product_name: "客製化禮盒",
-                price: 1300,
-            },
-            {
-                id: 10002,
-                product_name: "白甜點常溫禮盒",
-                price: 880,
-            },
-            {
-                id: 10003,
-                product_name: "月光 檸檬塔禮盒",
-                price: 1280,
-            },
-            {
-                id: 10004,
-                product_name: "可麗露禮盒",
-                price: 680,
-            },
-        ];
-
-        const product_filted = ref(products.filter((item) => {
+        const product_filted = ref(ProductData.filter((item) => {
             return item.id === parseInt(ID.value);
         })[0])
 
@@ -173,7 +126,7 @@ export default {
         watch(ROUTE, (to, old) => {
             ID.value = to.params.id;
             URL.value = parseInt(ID.value) > 100 ? 'product_set' : 'product';
-            product_filted.value = products.filter((item) => {
+            product_filted.value = ProductData.filter((item) => {
                 return item.id === parseInt(ID.value);
             })[0];
             order_number.value = 1;

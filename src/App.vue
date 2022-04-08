@@ -52,6 +52,7 @@ footer {
 
 footer{
     height: 50vh;
+    background-color: transparent;
 }
 
 * {
