@@ -19,7 +19,8 @@ import {
 } from '@firebase/auth'
 import {
     doc,
-    getDoc
+    getDoc,
+    setDoc
 } from '@firebase/firestore'
 
 import db from './store/firestore'
@@ -42,21 +43,30 @@ export default {
                 getDoc(doc(db, 'blanche', 'member', auth.currentUser.uid, 'shopcar'))
                     .then(res => {
                         if (res.data() === undefined || res.data().list === []) {
-
+                            setDoc(doc(db, "blanche", "member", user.uid, "shopcar"),
+                                store.state.shop_car,
+                            ).catch(() => {
+                                console.log("update fail");
+                            });
                         } else {
-                            store.dispatch('updateShopCarFromFireBase', res.data().list)
-                        }
+                            let list = store.state.shop_car;
+                            store.dispatch('updateShopCar', res.data().list).then(() => {
+                                for (let item of list) {
+                                    store.dispatch('pushShopCar', item);
+                                }
+                            }).then(() => {
+                                store.dispatch('updateUser', {
+                                    email: auth.currentUser.email,
+                                    uid: auth.currentUser.uid
+                                })
+                            });
 
+                        }
                     })
                     .catch(err => console.log(err))
-                    .then(() => {
-                        window.localStorage.setItem('isLogged', auth.currentUser ? auth.currentUser.email : '');
-                    })
             } else {
                 login_state.value = false;
-                store.dispatch('updateShopCarFromFireBase', []).then(() => {
-                    window.localStorage.setItem('isLogged', '')
-                })
+                store.dispatch('cleanShopCar')
             }
         })
 

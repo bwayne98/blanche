@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    <button v-show="shop_car_number !== 0" type="button"> <span> 前往結帳 ( NT${{ shop_car_price }} ) </span></button>
+                    <router-link :to="{name:'order'}" @click="closeAllBlock"><button v-show="shop_car_number !== 0" type="button"> <span> 前往結帳 ( NT${{ shop_car_price }} ) </span></button></router-link>
 
                 </div>
                 <div class="dark-bg"></div>
@@ -219,7 +219,7 @@ export default {
 
         })
 
-        function closeAllBlock(){
+        const closeAllBlock = () => {
             document.documentElement.style.overflowY = 'auto';
             search_bar.value = false;
             side_bar.value = false;
@@ -312,6 +312,7 @@ export default {
             showShopCar,
             removeShopCar,
             clickLink,
+            closeAllBlock,
             search_bar,
             search_input,
             search_result,

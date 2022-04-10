@@ -13,8 +13,8 @@ const setFireStareShopCar = (list) => {
     setDoc(doc(db, "blanche", "member", user.uid, "shopcar"), {
       list,
     }).catch((err) => {
-        console.log("update fail");
-      });
+      console.log("update fail");
+    });
   } else {
     return;
   }
@@ -24,6 +24,10 @@ export default createStore({
   state: {
     // {id,product_name,price,url,count}
     shop_car: [],
+    user: {
+      email: '',
+      uid: ''
+    },
   },
   getters: {
     shop_car_total_count: (state) => {
@@ -37,12 +41,12 @@ export default createStore({
       if (state.shop_car.length === 0) {
         return 0;
       } else {
-        return state.shop_car.reduce(
-          (pre, cur) => pre + cur.count * cur.price,
-          0
-        );
+        return state.shop_car.reduce((pre, cur) => pre + cur.count * cur.price, 0);
       }
     },
+    shop_car_counts: (state) => {
+      return state.shop_car.map(item => item.count);
+    }
   },
 
   mutations: {
@@ -57,10 +61,17 @@ export default createStore({
       // payload == id
       state.shop_car = state.shop_car.filter((item) => item.id !== payload.id);
     },
+    setUser(state, payload) {
+      state.user = payload;
+    }
   },
   actions: {
-    updateShopCarFromFireBase({ commit },payload){
-      commit("setShopCar",payload);
+    updateShopCar({ state, commit }, payload) {
+      commit("setShopCar", payload);
+      setFireStareShopCar(state.shop_car);
+    },
+    cleanShopCar({ commit }){
+      commit("setShopCar", []);
     },
     pushShopCar({ state, commit }, payload) {
       //payload == shop_car item
@@ -75,7 +86,6 @@ export default createStore({
           count: state.shop_car[index].count + payload.count,
         });
       }
-
       setFireStareShopCar(state.shop_car);
     },
     removeShopCar({ state, commit }, payload) {
@@ -83,6 +93,9 @@ export default createStore({
       commit("removeShopCarItem", { id: payload.id });
       setFireStareShopCar(state.shop_car);
     },
+    updateUser({ commit }, payload) {
+      commit('setUser', payload)
+    }
   },
   modules: {},
 });

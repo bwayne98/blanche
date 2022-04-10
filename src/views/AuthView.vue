@@ -1,7 +1,9 @@
 <template>
 <div class="container">
     <div class="content">
-        <component :is="form_name"></component>
+        <component v-if="login_state" :is="'Logged'"></component>
+        <component v-else :is="form_name"></component>
+
     </div>
 
 </div>
@@ -13,7 +15,6 @@ import {
     provide,
     onMounted,
     inject,
-    watch,
 } from 'vue';
 
 import {
@@ -28,9 +29,6 @@ import RegistFormVue from '@/components/AuthVIew/RegistForm.vue';
 import Logged from '@/components/AuthVIew/Logged.vue'
 
 import db from '@/store/firestore';
-import {
-    useRouter
-} from 'vue-router';
 
 export default {
     setup() {
@@ -43,10 +41,6 @@ export default {
 
         const form_name = ref('LoginForm');
         const login_state = inject('login_state');
-
-        if (window.localStorage.getItem('isLogged') !== '' | login_state) {
-            form_name.value = 'Logged'
-        }
 
         // console.log(auth.currentUser);
 
@@ -76,8 +70,6 @@ export default {
                 .then((userCredential) => {
                     email.value = '';
                     password.value = '';
-                    window.localStorage.setItem('isLogged',userCredential.user.email);
-                    history.go(0);
                 })
                 .catch((error) => {
                     // const errorCode = error.code;
@@ -168,7 +160,8 @@ export default {
         })
 
         return {
-            form_name
+            form_name,
+            login_state
         }
     },
     components: {

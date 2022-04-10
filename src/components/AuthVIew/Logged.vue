@@ -10,13 +10,17 @@
 
 <script>
 import {
+  computed,
     inject
 } from '@vue/runtime-core'
+import store from '@/store/store'
 export default {
     setup() {
 
         const LogOut = inject('LogOut')
-        const user = localStorage.getItem('isLogged')
+        const user = computed(()=>{
+            return store.state.user.email
+        })
 
         return {
             LogOut,
