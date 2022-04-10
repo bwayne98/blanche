@@ -41,11 +41,16 @@ export default {
 
                 getDoc(doc(db, 'blanche', 'member', auth.currentUser.uid, 'shopcar'))
                     .then(res => {
-                        store.dispatch('updateShopCarFromFireBase', res.data().list)
+                        if (res.data() === undefined || res.data().list === []) {
+
+                        } else {
+                            store.dispatch('updateShopCarFromFireBase', res.data().list)
+                        }
+
                     })
                     .catch(err => console.log(err))
                     .then(() => {
-                        window.localStorage.setItem('isLogged', auth.currentUser.email);
+                        window.localStorage.setItem('isLogged', auth.currentUser ? auth.currentUser.email : '');
                     })
             } else {
                 login_state.value = false;

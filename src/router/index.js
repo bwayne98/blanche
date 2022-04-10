@@ -61,4 +61,8 @@ const router = createRouter({
   },
 });
 
+router.beforeEach((to,form) => {
+
+})
+
 export default router;

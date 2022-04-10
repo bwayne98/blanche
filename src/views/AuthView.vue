@@ -128,6 +128,9 @@ export default {
         let moving = false;
 
         onMounted(() => {
+
+            document.body.classList.remove('scroll')
+
             let element = document.querySelector('.content');
             let el_top = element.offsetTop;
             let el_left = element.offsetLeft;
