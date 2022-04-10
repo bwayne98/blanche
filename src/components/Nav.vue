@@ -31,8 +31,8 @@
             <i class="fa-solid fa-user user-icon" @click="ROUTER.push({name:'auth'});BODY.classList.remove('scroll')">
                 <div>
                     <button v-if="login_state" @click="LogOut();BODY.classList.remove('scroll')">登出</button>
-                    <router-link :to="{name:'auth'}" v-else @click="BODY.classList.remove('scroll')"><button >登入</button></router-link>
-                    
+                    <router-link :to="{name:'auth'}" v-else @click="BODY.classList.remove('scroll')"><button>登入</button></router-link>
+
                 </div>
             </i>
             <i class="fa-solid fa-bag-shopping shop-car" @click="e => showShopCar(e)" :class="{active: shop_car}">
@@ -44,6 +44,7 @@
                 </div>
                 <div class="shop-content" @click.prevent.stop>
                     <div v-if="shop_car_number === 0" style="margin-top:50vh"> 空的購物車 </div>
+                    <router-link :to="{name:'order'}" @click="closeAllBlock"><button v-show="shop_car_number !== 0" type="button"> <span> 前往結帳 ( NT${{ shop_car_price }} ) </span></button></router-link>
                     <div class="car-list">
                         <div v-for="product in shop_car_content" :key="product.id">
                             <img :src="require('../../public/images/' + product.url + '/' + product.id + '.png')" alt="" @click="clickLink(product.id)">
@@ -54,8 +55,6 @@
                             <hr>
                         </div>
                     </div>
-
-                    <router-link :to="{name:'order'}" @click="closeAllBlock"><button v-show="shop_car_number !== 0" type="button"> <span> 前往結帳 ( NT${{ shop_car_price }} ) </span></button></router-link>
 
                 </div>
                 <div class="dark-bg"></div>
@@ -764,8 +763,8 @@ i:hover {
     }
 }
 
-.user-icon:hover{
-    >div{
+.user-icon:hover {
+    >div {
         opacity: 1;
         pointer-events: all;
     }
@@ -792,7 +791,7 @@ i:hover {
 
     .car-list {
         text-align: start;
-        margin: 20px 0;
+        margin: 10px 0 20px 0;
         height: calc(100vh - 90px);
         overflow: auto;
         color: $gray_hover;
@@ -848,7 +847,7 @@ i:hover {
             }
 
             >hr {
-                grid-row-start: 2;
+                grid-row-start: 1;
                 grid-column: 1/3;
                 height: .5px;
             }
@@ -856,6 +855,7 @@ i:hover {
     }
 
     button {
+        margin-top:20px;
         font-weight: 600;
         width: 220px;
         height: 40px;

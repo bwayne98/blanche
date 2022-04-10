@@ -126,4 +126,8 @@ footer {
     margin: 0;
     box-sizing: border-box;
 }
+
+input{
+    -webkit-appearance: none;
+}
 </style>

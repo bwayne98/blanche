@@ -15,7 +15,7 @@
 
     <div class="item" v-for="(product,index) in shop_car" :key="product.id">
         <div>
-            <img :src="require('../../../public/images/' +product.url + '/' + product.id + '.png')" alt="">
+            <router-link :to="{name:'product',params:{id:product.id}}" :class="{disabled : !trash_state || update_state}"> <img :src="require('../../../public/images/' +product.url + '/' + product.id + '.png')" alt=""> </router-link> 
             <div>
                 {{product.product_name}}
             </div>
@@ -194,8 +194,16 @@ $gray_active: rgba(100, 100, 100, 1);
         display: flex;
         place-self: start;
 
+        a.disabled{
+            pointer-events: none;
+        }
+
         img {
             height: 60px;
+        }
+
+        >div{
+            margin-left:10px;
         }
     }
 
