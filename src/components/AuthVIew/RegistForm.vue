@@ -1,13 +1,14 @@
 <template>
-<div class="login-form">
-    <p>請登入使用者</p>
-    <p><span>{{err_meg}}</span> <span> {{succ_meg}}</span></p>
+<div class="form">
+    <p>註冊新的使用者</p>
+    <p><span>{{err_meg}}</span></p>
     <div>
         <input type="text" placeholder="請輸入信箱" v-model="email">
         <input type="password" placeholder="請輸入密碼" v-model="password">
+        <input type="password" placeholder="再次輸入密碼" v-model="confirm" :disabled="password === ''">
     </div>
-    <button @click="clickLoginButton">登入</button>
-    <p><span @click="switchForm('RegistForm')">還沒有帳號</span><span>忘記密碼?</span></p>
+    <button @click="clickRegistButton">註冊</button>
+    <p><span @click="switchForm('LoginForm')">已經有帳號?立刻登入</span><span></span></p>
 </div>
 </template>
 
@@ -19,17 +20,17 @@ export default {
     setup() {
         const email = inject('email');
         const password = inject('password');
+        const confirm = inject('confirm');
         const err_meg = inject('err_meg');
-        const succ_meg = inject('succ_meg');
-        const clickLoginButton = inject('clickLoginButton');
+        const clickRegistButton = inject('clickRegistButton');
         const switchForm = inject('switchForm')
 
         return {
             email,
             password,
+            confirm,
             err_meg,
-            succ_meg,
-            clickLoginButton,
+            clickRegistButton,
             switchForm
         }
     },
@@ -48,7 +49,7 @@ export default {
     }
 }
 
-.login-form {
+.form {
     pointer-events: none;
     color: black;
     height: 300px;
@@ -87,7 +88,7 @@ export default {
             border-style: none none solid none;
             border-width: 1px;
             outline-style: none;
-            margin-top: 30px;
+            margin-top: 15px;
             padding: 0 5px;
             width: 100%;
             height: 20px;

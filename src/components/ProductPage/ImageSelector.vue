@@ -3,12 +3,12 @@
     <div>
         <button @click="selectImage(true)" :disabled="small_images_select_index === 0"><i class="fa-solid fa-chevron-up"></i></button>
         <div id="small-images">
-            <img v-for="(pic,index) in small_images_count" :key="'small-image' + index" :src="require('../../public/images/'+ url +'/' + id + '.png')" alt="" :class="{selected : small_images_select_index === index }" :style="{opacity : 1 - (index + 1) * 0.1}" @click="clickImage(index)">
+            <img v-for="(pic,index) in small_images_count" :key="'small-image' + index" :src="require('../../../public/images/'+ url +'/' + id + '.png')" alt="" :class="{selected : small_images_select_index === index }" :style="{opacity : 1 - (index + 1) * 0.1}" @click="clickImage(index)">
         </div>
 
         <button @click="selectImage(false)" :disabled="small_images_select_index === small_images_count - 1"><i class="fa-solid fa-chevron-down"></i></button>
     </div>
-    <img :src="require('../../public/images/'+ url +'/' + id + '.png')" alt="" :style="{opacity : 1 - small_images_select_index * 0.1 + 0.1 }">
+    <img :src="require('../../../public/images/'+ url +'/' + id + '.png')" alt="" :style="{opacity : 1 - small_images_select_index * 0.1 + 0.1 }">
     <div class="share-bar">
         <ShareBar></ShareBar>
     </div>
@@ -21,7 +21,7 @@ import {
     onMounted
 } from 'vue'
 
-import ShareBar from '../components/ShareBar.vue'
+import ShareBar from '../ShareBar.vue'
 
 export default {
     props: ['id', 'url'],

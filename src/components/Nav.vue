@@ -28,10 +28,10 @@
                 <div class="dark-bg"></div>
             </i>
             <i class="fa-solid fa-comment"></i>
-            <i class="fa-solid fa-user user-icon">
+            <i class="fa-solid fa-user user-icon" @click="ROUTER.push({name:'auth'});BODY.classList.remove('scroll')">
                 <div>
-                    <button v-if="login_state" @click="LogOut">登出</button>
-                    <router-link :to="{name:'auth'}" v-else><button >登入</button></router-link>
+                    <button v-if="login_state" @click="LogOut();BODY.classList.remove('scroll')">登出</button>
+                    <router-link :to="{name:'auth'}" v-else @click="BODY.classList.remove('scroll')"><button >登入</button></router-link>
                     
                 </div>
             </i>
@@ -204,7 +204,7 @@ export default {
 
         const search_result = ref([])
         let timerID = null;
-
+        //收尋結果監聽
         watch(search_input, (curr, old) => {
             search_result.value = []
             clearTimeout(timerID);
@@ -219,7 +219,7 @@ export default {
 
         })
 
-        const closeAllBlock = () => {
+        function closeAllBlock(){
             document.documentElement.style.overflowY = 'auto';
             search_bar.value = false;
             side_bar.value = false;
@@ -744,12 +744,13 @@ i:hover {
         position: absolute;
         left: 50%;
         transform: translateX(-50%) translateY(0);
-        width: 80px;
+        width: 60px;
         height: 50px;
-        padding: 10px;
+        padding: 10px 6px;
         background-color: rgba(255, 255, 255, .2);
         border-radius: 0 0 3px 3px;
         cursor: auto;
+        transition: .3s;
 
         button {
             width: 100%;

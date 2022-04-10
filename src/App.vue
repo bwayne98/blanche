@@ -23,7 +23,10 @@ import {
 } from '@firebase/firestore'
 
 import db from './store/firestore'
-import { provide, ref } from 'vue'
+import {
+    provide,
+    ref
+} from 'vue'
 
 export default {
     setup() {
@@ -41,19 +44,24 @@ export default {
                         store.dispatch('updateShopCarFromFireBase', res.data().list)
                     })
                     .catch(err => console.log(err))
-            }else{
+                    .then(() => {
+                        window.localStorage.setItem('isLogged', auth.currentUser.email);
+                    })
+            } else {
                 login_state.value = false;
-                store.dispatch('updateShopCarFromFireBase', [])  
+                store.dispatch('updateShopCarFromFireBase', []).then(() => {
+                    window.localStorage.setItem('isLogged', '')
+                })
             }
         })
 
         const LogOut = () => {
-            signOut(auth).then(()=> history.go(0));
+            signOut(auth).then(history.go(0));
 
         }
 
-        provide('LogOut',LogOut)
-        provide('login_state',login_state)
+        provide('LogOut', LogOut)
+        provide('login_state', login_state)
 
         return {}
     },

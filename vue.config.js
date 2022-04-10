@@ -4,6 +4,6 @@ module.exports = defineConfig({
   lintOnSave: false,  //dev下格式不受限
 
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/blanche/' // test20200915 為 repo 名稱
+    ? '/blanche/' // repo 名稱
     : '/'
 });

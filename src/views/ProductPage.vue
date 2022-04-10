@@ -46,9 +46,9 @@
 </template>
 
 <script>
-import ImageSelector from '../components/ImageSelector.vue';
-import ProductDescription from '../components/ProductDescription.vue';
-import ProductShipInfo from '../components/ProductShipInfo.vue';
+import ImageSelector from '../components/ProductPage/ImageSelector.vue';
+import ProductDescription from '../components/ProductPage/ProductDescription.vue';
+import ProductShipInfo from '../components/ProductPage/ProductShipInfo.vue';
 
 import ProductData from '../store/ProdcutData.js';
 
